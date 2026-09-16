@@ -1,0 +1,115 @@
+﻿@page "/input"
+@using Microsoft.AspNetCore.Components.Forms
+@rendermode InteractiveServer
+
+<h3>Upload Players</h3>
+
+@if (string.IsNullOrEmpty(selectedPlayerType))
+{
+    <label for="playerType">Player type:</label>
+
+    <select id="playerType" @onchange="PlayerTypeChanged">
+        <option value="">-- Select type --</option>
+        <option value="Keeper">Keeper</option>
+        <option value="Centre Back">Centre Back</option>
+        <option value="Wing/Full Back">Wing/Full Back</option>
+        <option value="Defensive Midfielder">Defensive Midfielder</option>
+        <option value="Midfielder">Midfielder</option>
+        <option value="Winger">Winger</option>
+        <option value="Striker">Striker</option>
+    </select>
+}
+else
+{
+    <p>
+        <strong>Player type:</strong> @selectedPlayerType
+    </p>
+
+    <label>Select HTML file:</label>
+
+    <label for="htmlFile"
+           style="display: inline-block; padding: 5px 10px; border: 1px solid #888; background: #eee; cursor: pointer; margin-left: 5px;">
+        Choose file
+    </label>
+
+    <InputFile id="htmlFile"
+               OnChange="HandleFileSelected"
+               accept=".html,.htm"
+               style="display: none;" />
+
+    <div>
+        @if (!string.IsNullOrEmpty(selectedFileName))
+        {
+            <span>
+                File uploaded successfully: @selectedFileName
+            </span>
+        }
+    </div>
+
+    <div>
+        <button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
+    </div>
+
+
+}
+
+@code {
+    private string? selectedPlayerType;
+    private string? selectedFileName;
+
+    private void PlayerTypeChanged(ChangeEventArgs e) { selectedPlayerType = e.Value?.ToString(); }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        if (string.IsNullOrEmpty(selectedPlayerType))
+            return;
+
+        var file = e.File;
+        selectedFileName = file.Name;
+
+        using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+        using var reader = new StreamReader(stream);
+
+        var html = await reader.ReadToEndAsync();
+
+        // Parse based on the type selected by the user
+        switch (selectedPlayerType)
+        {
+            case "Keeper":
+                // Parse as Keeper
+                break;
+
+            case "Centre Back":
+                // Parse as CentreBack
+                break;
+
+            case "Wing/Full Back":
+                // Parse as Wing/Full Back
+                break;
+
+            case "Defensive Midfielder":
+                // Parse as Def Midfielder
+                break;
+
+            case "Midfielder":
+                // Parse as Midfielder
+                break;
+
+            case "Winger":
+                // Parse as Winger
+                break;
+
+            case "Striker":
+                // Parse as Striker
+                break;
+        }
+
+    }
+
+    private void ResetPlayerType()
+    {
+        selectedPlayerType = null;
+        selectedFileName = null;
+    }
+}
+

@@ -1,0 +1,52 @@
+﻿@page "/Guide"
+
+<PageTitle>How to use</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+<p>@Info</p>
+
+<div>
+    <h2>How to use</h2>
+    <p>@Step1</p>
+    <p>
+        @Step2Text<a href="@Step2Url" target="_blank">fmscout.com</a>
+    </p>
+    <p>@Step3</p>
+    <p>@Step4</p>
+    <p>@Step5</p>
+    <p>@Step6</p>
+    <p>@Step7</p>
+    <p>@Step8</p>
+    <p>@Step9</p>
+    <p>@Step10</p>
+    <p>@Step11</p>
+    <p>@Step12Text</p>
+    <p>@Step12Help</p>
+    <p>@Final</p>
+</div>
+
+<div>
+    <p>
+        @ModHelp<a href="@Step2Url" target="_blank">fmscout.com</a>
+    </p>
+</div>
+
+@code {
+    private string Info = "This program uses machine learning models to value Football Manager 26 players.";
+    private string Step1 = "Step 1: Install R2Modman";
+    private string Step2Text { get; set; } = "Step 2: Download BepInEX Plugin from ";
+    private string Step2Url { get; set; } = "https://www.fmscout.com/a-fm26-player-csv-export.html";
+    private string Step3 = "Step 3: Create a Football Manager 26 profile on R2Modman";
+    private string Step4 = "Step 4: Install BepInExPack_FootballManager26 from the avaliable mods in the Online section";
+    private string Step5 = "Step 5: Navigate to the folder r2modmanPlus-local/FootballManager26/profiles/YOUR PROFILE NAME/BepInEx/Plugins";
+    private string Step6 = "Step 6: Paste the downloaded player export plugin into this folder";
+    private string Step7 = "Step 7: Press Start Modded";
+    private string Step8 = "Step 8: Load into chosen save and navigate to the player database";
+    private string Step9 = "Step 9: Import chosen player type view";
+    private string Step10 = "Step 10: Select a group of players you want from the player database (up to 5000)";
+    private string Step11 = "Step 11: Press CTRL + P to export the players";
+    private string Step12Text = "Step 12: Navigate to the Upload Players page and upload the exported HTML file ";
+    private string Step12Help = "Note: This will be in Documents/Sports Interactive/Football Manager 26/FM26PlayerExport by vinteset/Exports HTML ";
+    private string Final = "The model will then provide player valuations";
+    private string ModHelp { get; set; } = "For more information about the mod please read the page on ";
+}
