@@ -5,29 +5,29 @@ namespace MoneyBallApp.Models
     public class CentreBack: Player
     {
         public int? Height { get; set; }
-        public int? TacklesCompletedper90 { get; set; }
-        public int? ShtsBlckd90 { get; set; }
-        public int? PossessionLostper90 { get; set; }
-        public int? HeadersWonper90 { get; set; }
-        public int? HeadersLostper90{ get; set; }
-        public int? HeadersAttemptedper90{ get; set; }
+        public float? TacklesCompletedper90 { get; set; }
+        public float? ShtsBlckd90 { get; set; }
+        public float? PossessionLostper90 { get; set; }
+        public float? HeadersWonper90 { get; set; }
+        public float? HeadersLostper90{ get; set; }
+        public float? HeadersAttemptedper90{ get; set; }
         public int? Redcards { get; set; }
         public int? YellowCards { get; set; }
-        public int? PreC90{ get; set; }
-        public int? PresA90 { get; set; }
+        public float? PreC90{ get; set; }
+        public float? PresA90 { get; set; }
         public int? KeyTackles { get; set; }
-        public int? Clearancesper90 { get; set; }
-        public int? PossessionWonper90 { get; set; }
-        public int? KeyTacklesper90{  get; set; }
-        public int? Interceptionsper90{ get; set;  }
-        public int? Blk90 { get; set; }
+        public float? Clearancesper90 { get; set; }
+        public float? PossessionWonper90 { get; set; }
+        public float? KeyTacklesper90{  get; set; }
+        public float? Interceptionsper90{ get; set;  }
+        public float? Blk90 { get; set; }
         public int? TackleCompletionPercentage { get; set; }
-        public int? ProgressivePassesper90 { get; set; }
-        public int? KeyHeadersper90 { get; set;  }
-        public int? HeadersWonPercentage { get; set; }
+        public float? ProgressivePassesper90 { get; set; }
+        public float? KeyHeadersper90 { get; set;  }
+        public float? HeadersWonPercentage { get; set; }
         public int? FoulsMade { get; set; }
-        public int? PassesCompletedper90 { get; set; }
-        public int? PassesAttemptedper90 { get; set; }
+        public float? PassesCompletedper90 { get; set; }
+        public float? PassesAttemptedper90 { get; set; }
         public int? PassesAttempted { get; set; }
         public int? PassCompletionPercentage { get; set; }
         public int? MistakesLeadingtoGoals { get; set; }

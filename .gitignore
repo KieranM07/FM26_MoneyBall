@@ -24,3 +24,4 @@ dump.raw.txt
 
 packages/
 *.nupkg
+*.model

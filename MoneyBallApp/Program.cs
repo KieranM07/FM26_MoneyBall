@@ -1,10 +1,16 @@
 using MoneyBallApp.Components;
+using MoneyBallApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+builder.Services
+    .AddSingleton<KeeperParser>()
+    .AddSingleton<CentreBackParser>();
 
 var app = builder.Build();
 

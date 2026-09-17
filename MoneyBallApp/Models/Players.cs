@@ -9,5 +9,7 @@
         public int? Age { get; set; }
         public string? Wage { get; set; }
 
+        public string? Club { get; set; }
+
     }
 }

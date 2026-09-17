@@ -1,61 +1,109 @@
 ﻿@page "/input"
 @using Microsoft.AspNetCore.Components.Forms
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
 @rendermode InteractiveServer
+
+@inject KeeperParser KParser
+@inject CentreBackParser CBParser
 
 <h3>Upload Players</h3>
 
 @if (string.IsNullOrEmpty(selectedPlayerType))
 {
-    <label for="playerType">Player type:</label>
+	<label for="playerType">Player type:</label>
 
-    <select id="playerType" @onchange="PlayerTypeChanged">
-        <option value="">-- Select type --</option>
-        <option value="Keeper">Keeper</option>
-        <option value="Centre Back">Centre Back</option>
-        <option value="Wing/Full Back">Wing/Full Back</option>
-        <option value="Defensive Midfielder">Defensive Midfielder</option>
-        <option value="Midfielder">Midfielder</option>
-        <option value="Winger">Winger</option>
-        <option value="Striker">Striker</option>
-    </select>
+	<select id="playerType" @onchange="PlayerTypeChanged">
+		<option value="">-- Select type --</option>
+		<option value="Keeper">Keeper</option>
+		<option value="Centre Back">Centre Back</option>
+		<option value="Wing/Full Back">Wing/Full Back</option>
+		<option value="Defensive Midfielder">Defensive Midfielder</option>
+		<option value="Midfielder">Midfielder</option>
+		<option value="Winger">Winger</option>
+		<option value="Striker">Striker</option>
+	</select>
 }
 else
 {
-    <p>
-        <strong>Player type:</strong> @selectedPlayerType
-    </p>
+	<p>
+		<strong>Player type:</strong> @selectedPlayerType
+	</p>
 
-    <label>Select HTML file:</label>
+	<label>Select HTML file:</label>
 
-    <label for="htmlFile"
-           style="display: inline-block; padding: 5px 10px; border: 1px solid #888; background: #eee; cursor: pointer; margin-left: 5px;">
-        Choose file
-    </label>
+	<label for="htmlFile"
+	style="display: inline-block; padding: 5px 10px; border: 1px solid #888; background: #eee; cursor: pointer; margin-left: 5px;">
+		Choose file
+	</label>
 
-    <InputFile id="htmlFile"
-               OnChange="HandleFileSelected"
-               accept=".html,.htm"
-               style="display: none;" />
+	<InputFile id="htmlFile"
+	OnChange="HandleFileSelected"
+	accept=".html,.htm"
+	style="display: none;" />
 
-    <div>
-        @if (!string.IsNullOrEmpty(selectedFileName))
+	<div>
+		@if (!string.IsNullOrEmpty(selectedFileName))
+		{
+			<span>
+				File uploaded successfully: @selectedFileName
+			</span>
+		}
+	</div>
+
+	<div>
+		<button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
+	</div>
+
+    @if (keepers.Count > 0)
+    {
+        var keeper = keepers[0];
+
+        <h3>First Keeper</h3>
+
+        @foreach (var property in keeper.GetType().GetProperties())
         {
-            <span>
-                File uploaded successfully: @selectedFileName
-            </span>
+            <p>
+                <strong>@property.Name:</strong>
+                @property.GetValue(keeper)
+            </p>
         }
-    </div>
+    }
 
+    @if (centrebacks.Count > 0)
+    {
+        var centreback = centrebacks[0];
+
+        <h3>First CB</h3>
+
+        @foreach (var property in centreback.GetType().GetProperties())
+        {
+            <p>
+                <strong>@property.Name:</strong>
+                @property.GetValue(centreback)
+            </p>
+        }
+    }
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
     <div>
-        <button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
+        <p>
+            @error
+        </p>
     </div>
-
 
 }
 
 @code {
     private string? selectedPlayerType;
     private string? selectedFileName;
+    private string? error;
+
+    private List<Keeper> keepers = new();
+    private List<CentreBack> centrebacks = new();
+    private List<WingFullBack> wingfullbacks = new();
 
     private void PlayerTypeChanged(ChangeEventArgs e) { selectedPlayerType = e.Value?.ToString(); }
 
@@ -76,11 +124,27 @@ else
         switch (selectedPlayerType)
         {
             case "Keeper":
-                // Parse as Keeper
+                try
+                {
+                    keepers = KParser.ParseKeepers(html);
+                    error = "worked";
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing Keeper file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Centre Back":
-                // Parse as CentreBack
+                try
+                {
+                    centrebacks = CBParser.ParseCentreBacks(html);
+                    error = "worked";
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing CentreBack file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Wing/Full Back":
