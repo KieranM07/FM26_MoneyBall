@@ -1,4 +1,6 @@
+using Microsoft.ML.OnnxRuntime;
 using MoneyBallApp.Components;
+using MoneyBallApp.Components.States;
 using MoneyBallApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,13 +14,29 @@ builder.Services
     .AddSingleton<KeeperParser>()
     .AddSingleton<CentreBackParser>();
 
+
+// Load ONNX models
+builder.Services.AddKeyedSingleton<InferenceSession>(
+    "goalkeeper",
+    new InferenceSession("MachineLearning/goalkeeperXGBoost.onnx")
+);
+
+builder.Services.AddKeyedSingleton<InferenceSession>(
+    "centreback",
+    new InferenceSession("MachineLearning/centrebackXGBoost.onnx")
+);
+
+builder.Services.AddScoped<KeeperPredictorService>();
+builder.Services.AddScoped<KeeperState>();
+builder.Services.AddScoped<CBState>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);

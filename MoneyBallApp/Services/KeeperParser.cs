@@ -37,7 +37,7 @@
                 var k = new Keeper
                 {
                     Inf = GetString(cells, headerMap, "Inf"),
-                    PlayerName = GetString(cells, headerMap, "Player"),
+                    PlayerName = DecodeHtmlEntities(GetString(cells, headerMap, "Player")),
                     Nation = GetString(cells, headerMap, "Nation"),
                     Club = GetString(cells, headerMap, "Club"),
                     ExpectedSavePercentage = GetInt(cells, headerMap, "Expected Save Percentage"),
@@ -62,7 +62,7 @@
                     xGP90 = GetFloat(cells, headerMap, "xGP/90"),
                     MistakesLeadingtoGoals = GetInt(cells, headerMap, "Mistakes Leading to Goals"),
                     Age = GetInt(cells, headerMap, "Age"),
-                    TransferValue = GetString(cells, headerMap, "Transfer Value"),
+                    TransferValue = ConvertTransferValue(GetString(cells, headerMap, "Transfer Value")),
                     Wage = GetString(cells, headerMap, "Wage")
                 };
 
@@ -93,6 +93,14 @@
             return float.TryParse(text, out var value) ? value : null;
         }
 
+        private static string DecodeHtmlEntities(string? value)
+        {
+            if (!string.IsNullOrEmpty(value))
+                return WebUtility.HtmlDecode(value);
+            else
+                return "Unknown Name";
+        }
+
         private static int? ConvertHeightToInches(string? height)
         {
             if (string.IsNullOrWhiteSpace(height))
@@ -119,6 +127,70 @@
 
             return (feet * 12) + inches;
         }
+
+        private static int? ConvertTransferValue(string? transferValue)
+        {
+            if (string.IsNullOrWhiteSpace(transferValue))
+                return null;
+
+            transferValue = transferValue.Trim().ToUpper();
+
+            if (transferValue.Contains('-'))
+            {
+                var parts = transferValue.Split('-', StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length != 2)
+                    return null;
+
+                int? min = ConvertSingle(parts[0].Trim());
+                int? max = ConvertSingle(parts[1].Trim());
+
+                if (min == null || max == null)
+                    return null;
+
+                return (min.Value + max.Value) / 2;
+            }
+
+            return ConvertSingle(transferValue);
+        }
+
+        private static int? ConvertSingle(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            
+            value = value.Trim()
+                         .Replace("£", "")
+                         .Replace(",", "")
+                         .Replace(" ", "");
+
+            
+            if (int.TryParse(value, out int plain))
+                return plain;
+
+            // Millions
+            if (value.EndsWith("M"))
+            {
+                string num = value[..^1];
+
+                if (double.TryParse(num, out double d))
+                    return (int)(d * 1_000_000);
+            }
+
+            // Thousands
+            if (value.EndsWith("K"))
+            {
+                string num = value[..^1];
+
+                if (double.TryParse(num, out double d))
+                    return (int)(d * 1_000);
+            }
+
+            return null;
+        }
+
+
 
         private static int? StripPercentage(string? value)
         {

@@ -1,0 +1,78 @@
+﻿@page "/Predicted"
+
+@using MoneyBallApp.Components.States
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
+
+@rendermode InteractiveServer
+
+@inject KeeperState KeeperState
+@inject KeeperPredictorService KeeperPredictor
+
+<PageTitle>Predicted</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+
+
+@if (!hasPredictions)
+{
+    <p>No predictions found.</p>
+}
+else
+{
+    <h1>Top 25 Keepers by Valuation Difference</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Actual</th>
+                <th>Predicted</th>      
+                <th>Difference</th>
+                <th>Age</th>
+                <th>Current Club</th>
+                <th>Nationality</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var keeper in topKeepers)
+            {
+                <tr>
+                    <td>@keeper.PlayerName</td>
+                    <td>£@keeper.TransferValue</td>
+                    <td>£@keeper.PredictedValue</td>
+                    <td>
+                        £@(keeper.PredictedValue.Value - keeper.TransferValue.Value)
+                    </td>
+                    <td>@keeper.Age</td>
+                    <td>@keeper.Club</td>
+                    <td>@keeper.Nation</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Keeper> keepers = new();
+    private List<Keeper> topKeepers = new();
+    private bool hasPredictions = true;
+    protected override void OnInitialized()
+    {
+        keepers = KeeperState.Keepers;
+
+        if (keepers.Any())
+        {
+            KeeperPredictor.PredictKeepers(keepers);
+
+            topKeepers = keepers
+                .Where(k => k.PredictedValue.HasValue && k.TransferValue.HasValue)
+                .OrderByDescending(k =>
+                    (k.PredictedValue!.Value - k.TransferValue!.Value))
+                .Take(25)
+                .ToList();
+
+            hasPredictions = topKeepers.Any();
+        }
+    }
+}

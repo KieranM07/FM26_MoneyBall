@@ -39,7 +39,7 @@
                     Inf = GetString(cells, headerMap, "Inf"),
                     Nation = GetString(cells, headerMap, "Nation"),
                     PlayerName = GetString(cells, headerMap, "Player"),
-                    TransferValue = GetString(cells, headerMap, "Transfer Value"),
+                    TransferValue = ConvertTransferValue(GetString(cells, headerMap, "Transfer Value")),
                     Age = GetInt(cells, headerMap, "Age"),
                     Wage = GetString(cells, headerMap, "Wage"),
                     Club = GetString(cells, headerMap, "Club"),
@@ -99,6 +99,67 @@
             return float.TryParse(text, out var value) ? value : null;
         }
 
+        private static int? ConvertTransferValue(string? transferValue)
+        {
+            if (string.IsNullOrWhiteSpace(transferValue))
+                return null;
+
+            transferValue = transferValue.Trim().ToUpper();
+
+            if (transferValue.Contains('-'))
+            {
+                var parts = transferValue.Split('-', StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length != 2)
+                    return null;
+
+                int? min = ConvertSingle(parts[0].Trim());
+                int? max = ConvertSingle(parts[1].Trim());
+
+                if (min == null || max == null)
+                    return null;
+
+                return (min.Value + max.Value) / 2;
+            }
+
+            return ConvertSingle(transferValue);
+        }
+
+        private static int? ConvertSingle(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            // Remove currency symbols, commas and whitespace
+            value = value.Trim()
+                         .Replace("£", "")
+                         .Replace(",", "")
+                         .Replace(" ", "");
+
+       
+            if (int.TryParse(value, out int plain))
+                return plain;
+
+            // Millions
+            if (value.EndsWith("M"))
+            {
+                string num = value[..^1];
+
+                if (double.TryParse(num, out double d))
+                    return (int)(d * 1_000_000);
+            }
+
+            // Thousands
+            if (value.EndsWith("K"))
+            {
+                string num = value[..^1];
+
+                if (double.TryParse(num, out double d))
+                    return (int)(d * 1_000);
+            }
+
+            return null;
+        }
 
         private static int? ConvertHeightToInches(string? height)
         {

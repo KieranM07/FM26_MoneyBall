@@ -1,11 +1,13 @@
 ﻿@page "/input"
 @using Microsoft.AspNetCore.Components.Forms
+@using MoneyBallApp.Components.States
 @using MoneyBallApp.Models
 @using MoneyBallApp.Services
 @rendermode InteractiveServer
 
 @inject KeeperParser KParser
 @inject CentreBackParser CBParser
+@inject KeeperState KeeperState
 
 <h3>Upload Players</h3>
 
@@ -46,44 +48,11 @@ else
 		@if (!string.IsNullOrEmpty(selectedFileName))
 		{
 			<span>
-				File uploaded successfully: @selectedFileName
+				File uploaded successfully
 			</span>
 		}
 	</div>
 
-	<div>
-		<button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
-	</div>
-
-    @if (keepers.Count > 0)
-    {
-        var keeper = keepers[0];
-
-        <h3>First Keeper</h3>
-
-        @foreach (var property in keeper.GetType().GetProperties())
-        {
-            <p>
-                <strong>@property.Name:</strong>
-                @property.GetValue(keeper)
-            </p>
-        }
-    }
-
-    @if (centrebacks.Count > 0)
-    {
-        var centreback = centrebacks[0];
-
-        <h3>First CB</h3>
-
-        @foreach (var property in centreback.GetType().GetProperties())
-        {
-            <p>
-                <strong>@property.Name:</strong>
-                @property.GetValue(centreback)
-            </p>
-        }
-    }
 }
 
 @if (!string.IsNullOrEmpty(error))
@@ -96,14 +65,38 @@ else
 
 }
 
+@if (keepers != null && keepers.Any())
+{
+    <div>
+        <a href="/Predicted"
+           style="display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;">
+            Get Results
+        </a>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(selectedPlayerType))
+{
+    <div>
+        <button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
+    </div>
+}
+
 @code {
     private string? selectedPlayerType;
     private string? selectedFileName;
     private string? error;
 
-    private List<Keeper> keepers = new();
-    private List<CentreBack> centrebacks = new();
-    private List<WingFullBack> wingfullbacks = new();
+    public List<Keeper> keepers = new();
+    public List<CentreBack> centrebacks = new();
+    public List<WingFullBack> wingfullbacks = new();
 
     private void PlayerTypeChanged(ChangeEventArgs e) { selectedPlayerType = e.Value?.ToString(); }
 
@@ -127,7 +120,7 @@ else
                 try
                 {
                     keepers = KParser.ParseKeepers(html);
-                    error = "worked";
+                    KeeperState.Keepers = keepers;
                 }
                 catch (Exception)
                 {
@@ -139,7 +132,6 @@ else
                 try
                 {
                     centrebacks = CBParser.ParseCentreBacks(html);
-                    error = "worked";
                 }
                 catch (Exception)
                 {
@@ -175,5 +167,6 @@ else
         selectedPlayerType = null;
         selectedFileName = null;
     }
+
 }
 
