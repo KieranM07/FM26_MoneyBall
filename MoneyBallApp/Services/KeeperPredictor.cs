@@ -53,6 +53,15 @@
             keeper.Age?? 0
             };
 
+            int missingCount = features.Count(f => f == 0);
+
+            if (missingCount > features.Length / 2)
+            {
+                throw new InvalidOperationException(
+                    $"Keeper has too many missing features: {missingCount}/{features.Length}. Ensure that the correct view.fmf has been used to export data"
+                );
+            }
+
             var tensor = new DenseTensor<float>(
                 features,
                 new[] { 1, features.Length }
@@ -60,8 +69,8 @@
 
             var inputs = new[]
             {
-            NamedOnnxValue.CreateFromTensor("input", tensor)
-        };
+                NamedOnnxValue.CreateFromTensor("input", tensor)
+            };
 
             using var results = _session.Run(inputs);
 

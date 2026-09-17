@@ -13,6 +13,10 @@
 
 <h1>Money Ball Valuation App</h1>
 
+@if (!string.IsNullOrEmpty(error))
+{
+    <p>@error</p>
+}
 
 @if (!hasPredictions)
 {
@@ -57,22 +61,30 @@ else
     private List<Keeper> keepers = new();
     private List<Keeper> topKeepers = new();
     private bool hasPredictions = true;
+    private string? error = null;
     protected override void OnInitialized()
     {
         keepers = KeeperState.Keepers;
 
         if (keepers.Any())
         {
-            KeeperPredictor.PredictKeepers(keepers);
-
-            topKeepers = keepers
+            try
+            {
+                KeeperPredictor.PredictKeepers(keepers);
+                topKeepers = keepers
                 .Where(k => k.PredictedValue.HasValue && k.TransferValue.HasValue)
                 .OrderByDescending(k =>
                     (k.PredictedValue!.Value - k.TransferValue!.Value))
                 .Take(25)
                 .ToList();
 
-            hasPredictions = topKeepers.Any();
+                hasPredictions = topKeepers.Any();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+            
         }
     }
 }
