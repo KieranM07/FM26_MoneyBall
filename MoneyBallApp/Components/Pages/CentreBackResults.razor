@@ -1,0 +1,341 @@
+﻿@page "/CBsPredicted"
+
+@using MoneyBallApp.Components.States
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
+
+@rendermode InteractiveServer
+
+@inject CBState CBState
+@inject CBPredictorService CBPredictor
+
+<PageTitle>Predicted</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p>@error</p>
+}
+<button class="btn btn-primary" @onclick="TogglePlayers">
+    @(allPlayers ? "Show Top 25" : "Show Top 100")
+</button>
+
+<button class="btn btn-primary" @onclick="ToggleView">
+    @(allPlayers ? "Show Standard View" : "Show Expanded View")
+</button>
+
+@if (!hasPredictions)
+{
+    <p>No predictions found.</p>
+}
+else
+{
+    if (!allPlayers)
+    {
+        if (!expanded)
+        {
+            <h1>Top 25 CentreBacks by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>      
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var centreback in topCentreBacks)
+                    {
+                        <tr>
+                            <td>@centreback.PlayerName</td>
+                            <td>£@centreback.TransferValue</td>
+                            <td>£@centreback.PredictedValue</td>
+                            <td>
+                                £@(centreback.PredictedValue.Value - centreback.TransferValue.Value)
+                            </td>
+                            <td>@centreback.Age</td>
+                            <td>@centreback.Club</td>
+                            <td>@centreback.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 25 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Tackles Completed/90</th>
+                        <th>Shts Blckd/90</th>
+                        <th>Possession Lost/90</th>
+                        <th>Headers Won/90</th>
+                        <th>Headers Lost/90</th>
+                        <th>Height</th>
+                        <th>Headers Attempted/90</th>
+                        <th>Red Cards</th>
+                        <th>Yellow Cards</th>
+                        <th>Pres C/90</th>
+                        <th>Passes Completed/90</th>
+                        <th>Pres A/90</th>
+                        <th>Key Tackles</th>
+                        <th>Passes Attempted/90</th>
+                        <th>Passes Attempted</th>
+                        <th>Pass Completion %</th>
+                        <th>Clearances/90</th>
+                        <th>Possession Won/90</th>
+                        <th>Key Tackles/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                        <th>Fouls Made</th>
+                        <th>Interceptions/90</th>
+                        <th>Blk/90</th>
+                        <th>Tackle Completion %</th>
+                        <th>Progressive Passes/90</th>
+                        <th>Key Headers/90</th>
+                        <th>Headers Won %</th>
+                        <th>Minutes Per Game</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var centreback in topCentreBacks)
+                    {
+                        <tr>
+                            <td>@centreback.PlayerName</td>
+                            <td>£@centreback.TransferValue</td>
+                            <td>£@centreback.PredictedValue</td>
+                            <td>
+                                £@(centreback.PredictedValue.Value - centreback.TransferValue.Value)
+                            </td>
+                            <td>@centreback.Age</td>
+                            <td>@centreback.Club</td>
+                            <td>@centreback.Nation</td>
+                            <td>@centreback.TacklesCompletedper90</td>
+                            <td>@centreback.ShtsBlckd90</td>
+                            <td>@centreback.PossessionLostper90</td>
+                            <td>@centreback.HeadersWonper90</td>
+                            <td>@centreback.HeadersLostper90</td>
+                            <td>@centreback.Height</td>
+                            <td>@centreback.HeadersAttemptedper90</td>
+                            <td>@centreback.Redcards</td>
+                            <td>@centreback.YellowCards</td>
+                            <td>@centreback.PreC90</td>
+                            <td>@centreback.PassesCompletedper90</td>
+                            <td>@centreback.PresA90</td>
+                            <td>@centreback.KeyTackles</td>
+                            <td>@centreback.PassesAttemptedper90</td>
+                            <td>@centreback.PassesAttempted</td>
+                            <td>@centreback.PassCompletionPercentage</td>
+                            <td>@centreback.Clearancesper90</td>
+                            <td>@centreback.PossessionWonper90</td>
+                            <td>@centreback.KeyTacklesper90</td>
+                            <td>@centreback.MistakesLeadingtoGoals</td>
+                            <td>@centreback.FoulsMade</td>
+                            <td>@centreback.Interceptionsper90</td>
+                            <td>@centreback.Blk90</td>
+                            <td>@centreback.TackleCompletionPercentage</td>
+                            <td>@centreback.ProgressivePassesper90</td>
+                            <td>@centreback.KeyHeadersper90</td>
+                            <td>@centreback.HeadersWonPercentage</td>
+                            <td>@centreback.MinsGm</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        if (!expanded)
+        {
+            <h1>Top 100 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var centreback in allCentreBacks)
+                    {
+                        <tr>
+                            <td>@centreback.PlayerName</td>
+                            <td>£@centreback.TransferValue</td>
+                            <td>£@centreback.PredictedValue</td>
+                            <td>
+                                £@(centreback.PredictedValue.Value - centreback.TransferValue.Value)
+                            </td>
+                            <td>@centreback.Age</td>
+                            <td>@centreback.Club</td>
+                            <td>@centreback.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 100 CentreBacks by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Tackles Completed/90</th>
+                        <th>Shts Blckd/90</th>
+                        <th>Possession Lost/90</th>
+                        <th>Headers Won/90</th>
+                        <th>Headers Lost/90</th>
+                        <th>Height</th>
+                        <th>Headers Attempted/90</th>
+                        <th>Red Cards</th>
+                        <th>Yellow Cards</th>
+                        <th>Pres C/90</th>
+                        <th>Passes Completed/90</th>
+                        <th>Pres A/90</th>
+                        <th>Key Tackles</th>
+                        <th>Passes Attempted/90</th>
+                        <th>Passes Attempted</th>
+                        <th>Pass Completion %</th>
+                        <th>Clearances/90</th>
+                        <th>Possession Won/90</th>
+                        <th>Key Tackles/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                        <th>Fouls Made</th>
+                        <th>Interceptions/90</th>
+                        <th>Blk/90</th>
+                        <th>Tackle Completion %</th>
+                        <th>Progressive Passes/90</th>
+                        <th>Key Headers/90</th>
+                        <th>Headers Won %</th>
+                        <th>Minutes Per Game</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var centreback in allCentreBacks)
+                    {
+                        <tr>
+                            <td>@centreback.PlayerName</td>
+                            <td>£@centreback.TransferValue</td>
+                            <td>£@centreback.PredictedValue</td>
+                            <td>
+                                £@(centreback.PredictedValue.Value - centreback.TransferValue.Value)
+                            </td>
+                            <td>@centreback.Age</td>
+                            <td>@centreback.Club</td>
+                            <td>@centreback.Nation</td>
+                            <td>@centreback.TacklesCompletedper90</td>
+                            <td>@centreback.ShtsBlckd90</td>
+                            <td>@centreback.PossessionLostper90</td>
+                            <td>@centreback.HeadersWonper90</td>
+                            <td>@centreback.HeadersLostper90</td>
+                            <td>@centreback.Height</td>
+                            <td>@centreback.HeadersAttemptedper90</td>
+                            <td>@centreback.Redcards</td>
+                            <td>@centreback.YellowCards</td>
+                            <td>@centreback.PreC90</td>
+                            <td>@centreback.PassesCompletedper90</td>
+                            <td>@centreback.PresA90</td>
+                            <td>@centreback.KeyTackles</td>
+                            <td>@centreback.PassesAttemptedper90</td>
+                            <td>@centreback.PassesAttempted</td>
+                            <td>@centreback.PassCompletionPercentage</td>
+                            <td>@centreback.Clearancesper90</td>
+                            <td>@centreback.PossessionWonper90</td>
+                            <td>@centreback.KeyTacklesper90</td>
+                            <td>@centreback.MistakesLeadingtoGoals</td>
+                            <td>@centreback.FoulsMade</td>
+                            <td>@centreback.Interceptionsper90</td>
+                            <td>@centreback.Blk90</td>
+                            <td>@centreback.TackleCompletionPercentage</td>
+                            <td>@centreback.ProgressivePassesper90</td>
+                            <td>@centreback.KeyHeadersper90</td>
+                            <td>@centreback.HeadersWonPercentage</td>
+                            <td>@centreback.MinsGm</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}
+
+@code {
+    private List<CentreBack> centrebacks = new();
+    private List<CentreBack> topCentreBacks = new();
+    private List<CentreBack> allCentreBacks = new();
+    private bool hasPredictions = true;
+    private string? error = null;
+    private bool allPlayers = false;
+    private bool expanded = false;
+
+    protected override void OnInitialized()
+    {
+        centrebacks = CBState.Centrebacks;
+      
+        if (centrebacks.Any())
+        {
+            try
+            {
+                CBPredictor.PredictCentreBacks(centrebacks);
+                allCentreBacks = centrebacks.Where(cb => cb.PredictedValue.HasValue && cb.TransferValue.HasValue)
+                .OrderByDescending(cb =>
+                    (cb.PredictedValue!.Value - cb.TransferValue!.Value))
+                .Take(100)
+                .ToList();
+
+                topCentreBacks = centrebacks
+                .Where(cb => cb.PredictedValue.HasValue && cb.TransferValue.HasValue)
+                .OrderByDescending(cb =>
+                    (cb.PredictedValue!.Value - cb.TransferValue!.Value))
+                .Take(25)
+                .ToList();
+                hasPredictions = topCentreBacks.Any();
+
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+            
+        }
+    }
+
+    private void TogglePlayers()
+    {
+        allPlayers = !allPlayers;
+    }
+
+    private void ToggleView()
+    {
+        expanded = !expanded;
+    }
+    
+}

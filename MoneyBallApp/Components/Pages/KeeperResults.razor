@@ -1,0 +1,313 @@
+﻿@page "/KeepersPredicted"
+
+@using MoneyBallApp.Components.States
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
+
+@rendermode InteractiveServer
+
+@inject KeeperState KeeperState
+@inject KeeperPredictorService KeeperPredictor
+
+<PageTitle>Predicted</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p>@error</p>
+}
+<button class="btn btn-primary" @onclick="TogglePlayers">
+    @(allPlayers ? "Show Top 25" : "Show Top 100")
+</button>
+
+<button class="btn btn-primary" @onclick="ToggleView">
+    @(allPlayers ? "Show Standard View" : "Show Expanded View")
+</button>
+
+@if (!hasPredictions)
+{
+    <p>No predictions found.</p>
+}
+else
+{
+    if (!allPlayers)
+    {
+        if (!expanded)
+        {
+            <h1>Top 25 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>      
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var keeper in topKeepers)
+                    {
+                        <tr>
+                            <td>@keeper.PlayerName</td>
+                            <td>£@keeper.TransferValue</td>
+                            <td>£@keeper.PredictedValue</td>
+                            <td>
+                                £@(keeper.PredictedValue.Value - keeper.TransferValue.Value)
+                            </td>
+                            <td>@keeper.Age</td>
+                            <td>@keeper.Club</td>
+                            <td>@keeper.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 25 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Expected Save %</th>
+                        <th>Save %</th>
+                        <th>xGP</th>
+                        <th>Saves Tipped</th>
+                        <th>Mins/Gm</th>
+                        <th>Height</th>
+                        <th>Passes Completed</th>
+                        <th>Con/90</th>
+                        <th>Cln/90</th>
+                        <th>Clean Sheets</th>
+                        <th>Passes Completed/90</th>
+                        <th>Penalties Faced</th>
+                        <th>Penalties Saved Ratio</th>
+                        <th>Penalties Saved</th>
+                        <th>Passes Attempted/90</th>
+                        <th>Passes Attempted</th>
+                        <th>Pass Completion %</th>
+                        <th>Saves Parried</th>
+                        <th>Saves Held</th>
+                        <th>xGP/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var keeper in topKeepers)
+                    {
+                        <tr>
+                            <td>@keeper.PlayerName</td>
+                            <td>£@keeper.TransferValue</td>
+                            <td>£@keeper.PredictedValue</td>
+                            <td>
+                                £@(keeper.PredictedValue.Value - keeper.TransferValue.Value)
+                            </td>
+                            <td>@keeper.Age</td>
+                            <td>@keeper.Club</td>
+                            <td>@keeper.Nation</td>
+                            <td>@keeper.ExpectedSavePercentage</td>
+                            <td>@keeper.SavePercentage</td>
+                            <td>@keeper.xGP </td>
+                            <td>@keeper.SavesTipped</td>
+                            <td>@keeper.MinsGm</td>
+                            <td>@keeper.Height</td>
+                            <td>@keeper.PassesCompleted</td>
+                            <td>@keeper.Con90</td>
+                            <td>@keeper.Cln90</td>
+                            <td>@keeper.CleanSheets </td>
+                            <td>@keeper.PassesCompletedper90</td>
+                            <td>@keeper.PenaltiesFaced</td>
+                            <td>@keeper.PenaltiesSavedRatio</td>
+                            <td>@keeper.PenaltiesSaved </td>
+                            <td>@keeper.PassesAttemptedper90</td>
+                            <td>@keeper.PassesAttempted</td>
+                            <td>@keeper.PassCompletionPercentage</td>
+                            <td>@keeper.SavesParried</td>
+                            <td>@keeper.SavesHeld </td>
+                            <td>@keeper.xGP90</td>
+                            <td>@keeper.MistakesLeadingtoGoals</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        if (!expanded)
+        {
+            <h1>Top 100 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var keeper in allKeepers)
+                    {
+                        <tr>
+                            <td>@keeper.PlayerName</td>
+                            <td>£@keeper.TransferValue</td>
+                            <td>£@keeper.PredictedValue</td>
+                            <td>
+                                £@(keeper.PredictedValue.Value - keeper.TransferValue.Value)
+                            </td>
+                            <td>@keeper.Age</td>
+                            <td>@keeper.Club</td>
+                            <td>@keeper.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 100 Keepers by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Expected Save %</th>
+                        <th>Save %</th>
+                        <th>xGP</th>
+                        <th>Saves Tipped</th>
+                        <th>Mins/Gm</th>
+                        <th>Height</th>
+                        <th>Passes Completed</th>
+                        <th>Con/90</th>
+                        <th>Cln/90</th>
+                        <th>Clean Sheets</th>
+                        <th>Passes Completed/90</th>
+                        <th>Penalties Faced</th>
+                        <th>Penalties Saved Ratio</th>
+                        <th>Penalties Saved</th>
+                        <th>Passes Attempted/90</th>
+                        <th>Passes Attempted</th>
+                        <th>Pass Completion %</th>
+                        <th>Saves Parried</th>
+                        <th>Saves Held</th>
+                        <th>xGP/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var keeper in allKeepers)
+                    {
+                        <tr>
+                            <td>@keeper.PlayerName</td>
+                            <td>£@keeper.TransferValue</td>
+                            <td>£@keeper.PredictedValue</td>
+                            <td>
+                                £@(keeper.PredictedValue.Value - keeper.TransferValue.Value)
+                            </td>
+                            <td>@keeper.Age</td>
+                            <td>@keeper.Club</td>
+                            <td>@keeper.Nation</td>
+                            <td>@keeper.ExpectedSavePercentage</td>
+                            <td>@keeper.SavePercentage</td>
+                            <td>@keeper.xGP </td>
+                            <td>@keeper.SavesTipped</td>
+                            <td>@keeper.MinsGm</td>
+                            <td>@keeper.Height</td>
+                            <td>@keeper.PassesCompleted</td>
+                            <td>@keeper.Con90</td>
+                            <td>@keeper.Cln90</td>
+                            <td>@keeper.CleanSheets </td>
+                            <td>@keeper.PassesCompletedper90</td>
+                            <td>@keeper.PenaltiesFaced</td>
+                            <td>@keeper.PenaltiesSavedRatio</td>
+                            <td>@keeper.PenaltiesSaved </td>
+                            <td>@keeper.PassesAttemptedper90</td>
+                            <td>@keeper.PassesAttempted</td>
+                            <td>@keeper.PassCompletionPercentage</td>
+                            <td>@keeper.SavesParried</td>
+                            <td>@keeper.SavesHeld </td>
+                            <td>@keeper.xGP90</td>
+                            <td>@keeper.MistakesLeadingtoGoals</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}
+
+@code {
+    private List<Keeper> keepers = new();
+    private List<Keeper> topKeepers = new();
+    private List<Keeper> allKeepers = new();
+    private bool hasPredictions = true;
+    private string? error = null;
+    private bool allPlayers = false;
+    private bool expanded = false;
+
+    protected override void OnInitialized()
+    {
+        keepers = KeeperState.Keepers;
+
+        if (keepers.Any())
+        {
+            try
+            {
+                KeeperPredictor.PredictKeepers(keepers);
+                allKeepers = keepers.Where(k => k.PredictedValue.HasValue && k.TransferValue.HasValue)
+                .OrderByDescending(k =>
+                    (k.PredictedValue!.Value - k.TransferValue!.Value))
+                .Take(100)
+                .ToList();
+
+                topKeepers = keepers
+                .Where(k => k.PredictedValue.HasValue && k.TransferValue.HasValue)
+                .OrderByDescending(k =>
+                    (k.PredictedValue!.Value - k.TransferValue!.Value))
+                .Take(25)
+                .ToList();
+                hasPredictions = topKeepers.Any();
+
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+            
+        }
+    }
+
+    private void TogglePlayers()
+    {
+        allPlayers = !allPlayers;
+    }
+
+    private void ToggleView()
+    {
+        expanded = !expanded;
+    }
+    
+}

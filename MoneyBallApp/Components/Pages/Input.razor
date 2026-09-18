@@ -8,6 +8,7 @@
 @inject KeeperParser KParser
 @inject CentreBackParser CBParser
 @inject KeeperState KeeperState
+@inject CBState CBState
 
 <h3>Upload Players</h3>
 
@@ -68,7 +69,7 @@ else
 @if (keepers != null && keepers.Any())
 {
     <div>
-        <a href="/Predicted"
+        <a href="/KeepersPredicted"
            style="display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
@@ -77,11 +78,27 @@ else
             border-radius: 5px;
             border: none;
             cursor: pointer;">
-            Get Results
+            Get Results for Keepers
         </a>
     </div>
 }
 
+@if (centrebacks != null && centrebacks.Any())
+{
+    <div>
+        <a href="/CBsPredicted"
+           style="display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;">
+            Get Results for CentrBacks
+        </a>
+    </div>
+}
 @if (!string.IsNullOrEmpty(selectedPlayerType))
 {
     <div>
@@ -132,6 +149,7 @@ else
                 try
                 {
                     centrebacks = CBParser.ParseCentreBacks(html);
+                    CBState.Centrebacks = centrebacks;
                 }
                 catch (Exception)
                 {

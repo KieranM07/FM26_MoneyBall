@@ -9,6 +9,6 @@ namespace MoneyBallApp.Components.States
 
     public class CBState
     {
-        public List<CentreBack> centrebacks { get; set; } = new();
+        public List<CentreBack> Centrebacks { get; set; } = new();
     }
 }

@@ -4,9 +4,9 @@
     using MoneyBallApp.Models;
     using System.Net;
 
-    public class CentreBackParser
+    public class WingFullBackParser
     {
-        public List<CentreBack> ParseCentreBacks(string html)
+        public List<WingFullBack> ParseWingFullBacks(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -14,7 +14,7 @@
             var table = doc.DocumentNode.SelectSingleNode("//table");
             var rows = table?.SelectNodes(".//tr");
             if (rows == null || rows.Count == 0)
-                return new List<CentreBack>();
+                return new List<WingFullBack>();
 
             // Build header -> column index map
             var headerMap = (rows.First()!.SelectNodes(".//th|.//td")
@@ -26,14 +26,14 @@
                 })
                 .ToDictionary(x => x.Name, x => x.Index);
 
-            var centrebacks = new List<CentreBack>();
+            var wingfullbacks = new List<WingFullBack>();
 
             foreach (var row in rows.Skip(1))
             {
                 var cells = row.SelectNodes(".//td");
                 if (cells == null) continue;
 
-                var cb = new CentreBack
+                var wfb = new WingFullBack
                 {
 
                     Inf = GetString(cells, headerMap, "Inf"),
@@ -43,40 +43,38 @@
                     Age = GetInt(cells, headerMap, "Age"),
                     Wage = GetString(cells, headerMap, "Wage"),
                     Club = GetString(cells, headerMap, "Club"),
-                    TacklesCompletedper90 = GetFloat(cells, headerMap, "Tackles Completed per 90"),
-                    ShtsBlckd90 = GetFloat(cells, headerMap, "Shts Blckd/90"),
-                    PossessionLostper90 = GetFloat(cells, headerMap, "Possession Lost per 90"),
-                    HeadersWonper90 = GetFloat(cells, headerMap, "Headers Won per 90"),
-                    HeadersLostper90 = GetFloat(cells, headerMap, "Headers Lost per 90"),
-                    Height = ConvertHeightToInches(GetString(cells, headerMap, "Height")),
-                    HeadersAttemptedper90 = GetFloat(cells, headerMap, "Headers Attempted per 90"),
-                    Redcards = GetInt(cells, headerMap, "Red cards"),
-                    YellowCards = GetInt(cells, headerMap, "Yellow Cards"),
-                    PreC90 = GetFloat(cells, headerMap, "Pres C/90"),
-                    PassesCompletedper90 = GetFloat(cells, headerMap, "Passes Completed per 90"),
-                    PresA90 = GetFloat(cells, headerMap, "Pres A/90"),
-                    KeyTackles = GetInt(cells, headerMap, "Key Tackles"),
-                    PassesAttemptedper90 = GetFloat(cells, headerMap, "Passes Attempted per 90"),
-                    PassesAttempted = GetInt(cells, headerMap, "Passes Attempted"),
-                    PassCompletionPercentage = StripPercentage(GetString(cells, headerMap, "Pass Completion Percentage")),
-                    Clearancesper90 = GetFloat(cells, headerMap, "Clearances per 90"),
-                    PossessionWonper90 = GetFloat(cells, headerMap, "Possession Won per 90"),
-                    KeyTacklesper90 = GetFloat(cells, headerMap, "Key Tackles per 90"),
-                    MistakesLeadingtoGoals = GetInt(cells, headerMap, "Mistakes Leading to Goals"),
+                    CrossesAttemptedPer90 = GetFloat(cells, headerMap, "Crosses Attempted per 90"),
+                    AstsPer90 = GetFloat(cells, headerMap, "Asts/90"),
                     FoulsMade = GetInt(cells, headerMap, "Fouls Made"),
-                    Interceptionsper90 = GetFloat(cells, headerMap, "Interceptions per 90"),
-                    Blk90 = GetFloat(cells, headerMap, "Blk/90"),
+                    ChancesCreatedPer90 = GetFloat(cells, headerMap, "Chances Created per 90"),
+                    OpenPlayCrossCompletionPercentage = GetInt(cells, headerMap, "Open Play Cross Completion Percentage"),
+                    PossessionWonPer90 = GetFloat(cells, headerMap, "Possession Won per 90"),
                     TackleCompletionPercentage = GetInt(cells, headerMap, "Tackle Completion Percentage"),
-                    ProgressivePassesper90 = GetFloat(cells, headerMap, "Progressive Passes per 90"),
-                    KeyHeadersper90 = GetFloat(cells, headerMap, "Key Headers per 90"),
-                    HeadersWonPercentage = GetFloat(cells, headerMap, "Headers Won Percentage"),
-                    MinsGm = GetFloat(cells, headerMap, "Mins/Gm"),
+                    XA90 = GetFloat(cells, headerMap, "xA/90"),
+                    KeyTackles = GetInt(cells, headerMap, "Key Tackles"),
+                    ClearCutChancesCreated = GetInt(cells, headerMap, "Clear Cut Chances Created"),
+                    PassesAttemptedPer90 = GetFloat(cells, headerMap, "Passes Attempted per 90"),
+                    PsP = GetInt(cells, headerMap, "PsP"),
+                    PassCompletionPercentage = GetInt(cells, headerMap, "Pass Completion Percentage"),
+                    SprintsPer90 = GetFloat(cells, headerMap, "Sprints/90"),
+                    CrossesCompletedRatio = GetInt(cells, headerMap, "Crosses Completed Ratio"),
+                    PresCPer90 = GetFloat(cells, headerMap, "Pres C/90"),
+                    PossessionLostPer90 = GetFloat(cells, headerMap, "Possession Lost per 90"),
+                    TacklesCompletedPer90 = GetFloat(cells, headerMap, "Tackles Completed per 90"),
+                    KeyTacklesPer90 = GetFloat(cells, headerMap, "Key Tackles per 90"),
+                    KeyPassesPer90 = GetFloat(cells, headerMap, "Key Passes per 90"),
+                    OpenPlayKeyPassesPer90 = GetFloat(cells, headerMap, "Open Play Key Passes per 90"),
+                    ProgressivePassesPer90 = GetFloat(cells, headerMap, "Progressive Passes per 90"),
+                    OpenPlayCrossesCompletedPer90 = GetFloat(cells, headerMap, "Open Play Crosses Completed per 90"),
+                    OpenPlayCrossesAttemptedPer90 = GetFloat(cells, headerMap, "Open Play Crosses Attempted per 90"),
+                    CrossesCompletedPer90 = GetFloat(cells, headerMap, "Crosses Completed per 90"),
+                    MistakesLeadingToGoals = GetInt(cells, headerMap, "Mistakes Leading to Goals"),
                 };
 
-                centrebacks.Add(cb);
+                wingfullbacks.Add(wfb);
             }
 
-            return centrebacks;
+            return wingfullbacks;
         }
 
         private int? GetInt(HtmlNodeCollection cells, Dictionary<string, int> map, string key)

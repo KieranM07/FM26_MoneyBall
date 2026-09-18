@@ -29,6 +29,7 @@ builder.Services.AddKeyedSingleton<InferenceSession>(
 builder.Services.AddScoped<KeeperPredictorService>();
 builder.Services.AddScoped<KeeperState>();
 builder.Services.AddScoped<CBState>();
+builder.Services.AddScoped<CBPredictorService>();
 
 
 var app = builder.Build();

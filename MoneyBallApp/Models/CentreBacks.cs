@@ -31,5 +31,6 @@ namespace MoneyBallApp.Models
         public int? PassesAttempted { get; set; }
         public int? PassCompletionPercentage { get; set; }
         public int? MistakesLeadingtoGoals { get; set; }
+        public float? MinsGm { get; internal set; }
     }
 }
