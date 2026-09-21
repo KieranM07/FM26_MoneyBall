@@ -12,7 +12,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services
     .AddSingleton<KeeperParser>()
-    .AddSingleton<CentreBackParser>();
+    .AddSingleton<CentreBackParser>()
+    .AddSingleton<WingFullBackParser>();
 
 
 // Load ONNX models
@@ -26,10 +27,17 @@ builder.Services.AddKeyedSingleton<InferenceSession>(
     new InferenceSession("MachineLearning/centrebackXGBoost.onnx")
 );
 
+builder.Services.AddKeyedSingleton<InferenceSession>(
+    "wingfullback",
+    new InferenceSession("MachineLearning/wingfullbackXGBoost.onnx")
+);
+
 builder.Services.AddScoped<KeeperPredictorService>();
 builder.Services.AddScoped<KeeperState>();
 builder.Services.AddScoped<CBState>();
 builder.Services.AddScoped<CBPredictorService>();
+builder.Services.AddScoped<WFBState>();
+builder.Services.AddScoped<WFBPredictorService>();
 
 
 var app = builder.Build();

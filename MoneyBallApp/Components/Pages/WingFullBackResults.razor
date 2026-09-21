@@ -1,0 +1,334 @@
+﻿@page "/WFBsPredicted"
+
+@using MoneyBallApp.Components.States
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
+
+@rendermode InteractiveServer
+
+@inject WFBState WFBState
+@inject WFBPredictorService WFBPredictor
+
+<PageTitle>Predicted</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p>@error</p>
+}
+<button class="btn btn-primary" @onclick="TogglePlayers">
+    @(allPlayers ? "Show Top 25" : "Show Top 100")
+</button>
+
+<button class="btn btn-primary" @onclick="ToggleView">
+    @(expanded ? "Show Standard View" : "Show Expanded View")
+</button>
+
+@if (!hasPredictions)
+{
+    <p>No predictions found.</p>
+    <p>Ensure Player Type selection is correct and the data is in the correct view for exporting.</p>
+}
+else
+{
+    if (!allPlayers)
+    {
+        if (!expanded)
+        {
+            <h1>Top 25  Wing/Full Backs by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var wingfullback in topWingFullBacks)
+                    {
+                        <tr>
+                            <td>@wingfullback.PlayerName</td>
+                            <td>£@wingfullback.TransferValue</td>
+                            <td>£@wingfullback.PredictedValue</td>
+                            <td>
+                                £@(wingfullback.PredictedValue.Value - wingfullback.TransferValue.Value)
+                            </td>
+                            <td>@wingfullback.Age</td>
+                            <td>@wingfullback.Club</td>
+                            <td>@wingfullback.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 25 WingFullBacks by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Crosses Attempted/90</th>
+                        <th>Assists/90</th>
+                        <th>Fouls Made</th>
+                        <th>Chances Created/90</th>
+                        <th>Open Play Cross Completion %</th>
+                        <th>Possession Won/90</th>
+                        <th>Tackle Completion %</th>
+                        <th>xA/90</th>
+                        <th>Key Tackles</th>
+                        <th>Clear Cut Chances Created</th>
+                        <th>Passes Attempted/90</th>
+                        <th>PsP</th>
+                        <th>Pass Completion %</th>
+                        <th>Sprints/90</th>
+                        <th>Crosses Completed Ratio</th>
+                        <th>Pres C/90</th>
+                        <th>Possession Lost/90</th>
+                        <th>Tackles Completed/90</th>
+                        <th>Key Tackles/90</th>
+                        <th>Key Passes/90</th>
+                        <th>Open Play Key Passes/90</th>
+                        <th>Progressive Passes/90</th>
+                        <th>Open Play Crosses Completed/90</th>
+                        <th>Open Play Crosses Attempted/90</th>
+                        <th>Crosses Completed/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var wingfullback in topWingFullBacks)
+                    {
+                        <tr>
+                            <td>@wingfullback.PlayerName</td>
+                            <td>£@wingfullback.TransferValue</td>
+                            <td>£@wingfullback.PredictedValue</td>
+                            <td>
+                                £@(wingfullback.PredictedValue.Value - wingfullback.TransferValue.Value)
+                            </td>
+                            <td>@wingfullback.Age</td>
+                            <td>@wingfullback.Club</td>
+                            <td>@wingfullback.Nation</td>
+                            <td>@wingfullback.CrossesAttemptedPer90</td>
+                            <td>@wingfullback.AstsPer90</td>
+                            <td>@wingfullback.FoulsMade</td>
+                            <td>@wingfullback.ChancesCreatedPer90</td>
+                            <td>@wingfullback.OpenPlayCrossCompletionPercentage</td>
+                            <td>@wingfullback.PossessionWonPer90</td>
+                            <td>@wingfullback.TackleCompletionPercentage</td>
+                            <td>@wingfullback.XA90</td>
+                            <td>@wingfullback.KeyTackles</td>
+                            <td>@wingfullback.ClearCutChancesCreated</td>
+                            <td>@wingfullback.PassesAttemptedPer90</td>
+                            <td>@wingfullback.PsP</td>
+                            <td>@wingfullback.PassCompletionPercentage</td>
+                            <td>@wingfullback.SprintsPer90</td>
+                            <td>@wingfullback.CrossesCompletedRatio</td>
+                            <td>@wingfullback.PresCPer90</td>
+                            <td>@wingfullback.PossessionLostPer90</td>
+                            <td>@wingfullback.TacklesCompletedPer90</td>
+                            <td>@wingfullback.KeyTacklesPer90</td>
+                            <td>@wingfullback.KeyPassesPer90</td>
+                            <td>@wingfullback.OpenPlayKeyPassesPer90</td>
+                            <td>@wingfullback.ProgressivePassesPer90</td>
+                            <td>@wingfullback.OpenPlayCrossesCompletedPer90</td>
+                            <td>@wingfullback.OpenPlayCrossesAttemptedPer90</td>
+                            <td>@wingfullback.CrossesCompletedPer90</td>
+                            <td>@wingfullback.MistakesLeadingToGoals</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        if (!expanded)
+        {
+            <h1>Top 100 Wing/Full Backs by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var wingfullback in allWingFullBacks)
+                    {
+                        <tr>
+                            <td>@wingfullback.PlayerName</td>
+                            <td>£@wingfullback.TransferValue</td>
+                            <td>£@wingfullback.PredictedValue</td>
+                            <td>
+                                £@(wingfullback.PredictedValue.Value - wingfullback.TransferValue.Value)
+                            </td>
+                            <td>@wingfullback.Age</td>
+                            <td>@wingfullback.Club</td>
+                            <td>@wingfullback.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 100 Wing/Full Backs by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Crosses Attempted/90</th>
+                        <th>Assists/90</th>
+                        <th>Fouls Made</th>
+                        <th>Chances Created/90</th>
+                        <th>Open Play Cross Completion %</th>
+                        <th>Possession Won/90</th>
+                        <th>Tackle Completion %</th>
+                        <th>xA/90</th>
+                        <th>Key Tackles</th>
+                        <th>Clear Cut Chances Created</th>
+                        <th>Passes Attempted/90</th>
+                        <th>PsP</th>
+                        <th>Pass Completion %</th>
+                        <th>Sprints/90</th>
+                        <th>Crosses Completed Ratio</th>
+                        <th>Pres C/90</th>
+                        <th>Possession Lost/90</th>
+                        <th>Tackles Completed/90</th>
+                        <th>Key Tackles/90</th>
+                        <th>Key Passes/90</th>
+                        <th>Open Play Key Passes/90</th>
+                        <th>Progressive Passes/90</th>
+                        <th>Open Play Crosses Completed/90</th>
+                        <th>Open Play Crosses Attempted/90</th>
+                        <th>Crosses Completed/90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var wingfullback in allWingFullBacks)
+                    {
+                        <tr>
+                            <td>@wingfullback.PlayerName</td>
+                            <td>£@wingfullback.TransferValue</td>
+                            <td>£@wingfullback.PredictedValue</td>
+                            <td>
+                                £@(wingfullback.PredictedValue.Value - wingfullback.TransferValue.Value)
+                            </td>
+                            <td>@wingfullback.Age</td>
+                            <td>@wingfullback.Club</td>
+                            <td>@wingfullback.Nation</td>
+                            <td>@wingfullback.CrossesAttemptedPer90</td>
+                            <td>@wingfullback.AstsPer90</td>
+                            <td>@wingfullback.FoulsMade</td>
+                            <td>@wingfullback.ChancesCreatedPer90</td>
+                            <td>@wingfullback.OpenPlayCrossCompletionPercentage</td>
+                            <td>@wingfullback.PossessionWonPer90</td>
+                            <td>@wingfullback.TackleCompletionPercentage</td>
+                            <td>@wingfullback.XA90</td>
+                            <td>@wingfullback.KeyTackles</td>
+                            <td>@wingfullback.ClearCutChancesCreated</td>
+                            <td>@wingfullback.PassesAttemptedPer90</td>
+                            <td>@wingfullback.PsP</td>
+                            <td>@wingfullback.PassCompletionPercentage</td>
+                            <td>@wingfullback.SprintsPer90</td>
+                            <td>@wingfullback.CrossesCompletedRatio</td>
+                            <td>@wingfullback.PresCPer90</td>
+                            <td>@wingfullback.PossessionLostPer90</td>
+                            <td>@wingfullback.TacklesCompletedPer90</td>
+                            <td>@wingfullback.KeyTacklesPer90</td>
+                            <td>@wingfullback.KeyPassesPer90</td>
+                            <td>@wingfullback.OpenPlayKeyPassesPer90</td>
+                            <td>@wingfullback.ProgressivePassesPer90</td>
+                            <td>@wingfullback.OpenPlayCrossesCompletedPer90</td>
+                            <td>@wingfullback.OpenPlayCrossesAttemptedPer90</td>
+                            <td>@wingfullback.CrossesCompletedPer90</td>
+                            <td>@wingfullback.MistakesLeadingToGoals</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}
+
+@code {
+    private List<WingFullBack> wingfullbacks = new();
+    private List<WingFullBack> topWingFullBacks = new();
+    private List<WingFullBack> allWingFullBacks = new();
+    private bool hasPredictions = true;
+    private string? error = null;
+    private bool allPlayers = false;
+    private bool expanded = false;
+
+    protected override void OnInitialized()
+    {
+        wingfullbacks = WFBState.WingFullBacks;
+      
+        if (wingfullbacks.Any())
+        {
+            try
+            {
+                WFBPredictor.PredictWingFullBacks(wingfullbacks);
+                allWingFullBacks = wingfullbacks.Where(wfb => wfb.PredictedValue.HasValue && wfb.TransferValue.HasValue)
+                .OrderByDescending(wfb =>
+                    (wfb.PredictedValue!.Value - wfb.TransferValue!.Value))
+                .Take(100)
+                .ToList();
+
+                topWingFullBacks = wingfullbacks
+                .Where(wfb => wfb.PredictedValue.HasValue && wfb.TransferValue.HasValue)
+                .OrderByDescending(wfb =>
+                    (wfb.PredictedValue!.Value - wfb.TransferValue!.Value))
+                .Take(25)
+                .ToList();
+                hasPredictions = topWingFullBacks.Any();
+
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+            
+        }
+    }
+
+    private void TogglePlayers()
+    {
+        allPlayers = !allPlayers;
+    }
+
+    private void ToggleView()
+    {
+        expanded = !expanded;
+    }
+    
+}

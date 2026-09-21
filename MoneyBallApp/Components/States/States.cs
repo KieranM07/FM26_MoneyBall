@@ -11,4 +11,9 @@ namespace MoneyBallApp.Components.States
     {
         public List<CentreBack> Centrebacks { get; set; } = new();
     }
+
+    public class WFBState
+    {
+        public List<WingFullBack> WingFullBacks { get; set; } = new();
+    }
 }

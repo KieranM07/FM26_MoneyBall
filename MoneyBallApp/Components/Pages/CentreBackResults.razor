@@ -22,12 +22,13 @@
 </button>
 
 <button class="btn btn-primary" @onclick="ToggleView">
-    @(allPlayers ? "Show Standard View" : "Show Expanded View")
+    @(expanded ? "Show Standard View" : "Show Expanded View")
 </button>
 
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
+    <p>Ensure Player Type selection is correct and the data is in the correct view for exporting.</p>
 }
 else
 {
@@ -69,7 +70,7 @@ else
         }
         else
         {
-            <h1>Top 25 Keepers by Valuation Difference</h1>
+            <h1>Top 25 CentreBacks by Valuation Difference</h1>
             <table class="table">
                 <thead>
                     <tr>

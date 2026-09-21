@@ -55,7 +55,7 @@
                     ClearCutChancesCreated = GetInt(cells, headerMap, "Clear Cut Chances Created"),
                     PassesAttemptedPer90 = GetFloat(cells, headerMap, "Passes Attempted per 90"),
                     PsP = GetInt(cells, headerMap, "PsP"),
-                    PassCompletionPercentage = GetInt(cells, headerMap, "Pass Completion Percentage"),
+                    PassCompletionPercentage = StripPercentage(GetString(cells, headerMap, "Pass Completion Percentage")),
                     SprintsPer90 = GetFloat(cells, headerMap, "Sprints/90"),
                     CrossesCompletedRatio = GetInt(cells, headerMap, "Crosses Completed Ratio"),
                     PresCPer90 = GetFloat(cells, headerMap, "Pres C/90"),

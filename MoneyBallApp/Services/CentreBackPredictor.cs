@@ -16,10 +16,10 @@
 
         public void PredictCentreBacks(List<CentreBack> centrebacks)
         {
-            // Remove keepers who have half or fewer of their stats as 0
+            // Remove cbs who have half or fewer of their stats as 0
             centrebacks.RemoveAll(centreback => !HasEnoughStats(centreback));
 
-            // Only predict keepers that passed the minimum stats requirement
+            // Only predict cbs that passed the minimum stats requirement
             foreach (var centreback in centrebacks)
             {
                 centreback.PredictedValue = Predict(centreback);

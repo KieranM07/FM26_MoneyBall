@@ -7,8 +7,10 @@
 
 @inject KeeperParser KParser
 @inject CentreBackParser CBParser
+@inject WingFullBackParser WFBParser
 @inject KeeperState KeeperState
 @inject CBState CBState
+@inject WFBState WFBState
 
 <h3>Upload Players</h3>
 
@@ -95,7 +97,25 @@ else
             border-radius: 5px;
             border: none;
             cursor: pointer;">
-            Get Results for CentrBacks
+            Get Results for CentreBacks
+        </a>
+    </div>
+}
+
+
+@if (wingfullbacks != null && wingfullbacks.Any())
+{
+    <div>
+        <a href="/WFBsPredicted"
+           style="display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;">
+            Get Results for Wing/FullBacks
         </a>
     </div>
 }
@@ -158,7 +178,15 @@ else
                 break;
 
             case "Wing/Full Back":
-                // Parse as Wing/Full Back
+                try
+                {
+                    wingfullbacks = WFBParser.ParseWingFullBacks(html);
+                    WFBState.WingFullBacks = wingfullbacks;
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing wing/fullback file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Defensive Midfielder":

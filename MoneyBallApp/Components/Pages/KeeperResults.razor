@@ -22,12 +22,13 @@
 </button>
 
 <button class="btn btn-primary" @onclick="ToggleView">
-    @(allPlayers ? "Show Standard View" : "Show Expanded View")
+    @(expanded ? "Show Standard View" : "Show Expanded View")
 </button>
 
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
+    <p>Ensure Player Type selection is correct and the data is in the correct view for exporting.</p>
 }
 else
 {
