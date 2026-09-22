@@ -8,9 +8,17 @@
 @inject KeeperParser KParser
 @inject CentreBackParser CBParser
 @inject WingFullBackParser WFBParser
+@inject DefMidParser DMParser
+@inject MidParser MParser
+@inject WingParser WParser
+@inject STParser STParser
 @inject KeeperState KeeperState
 @inject CBState CBState
 @inject WFBState WFBState
+@inject DMState DMState
+@inject MState MState
+@inject WState WState
+@inject STState STState
 
 <h3>Upload Players</h3>
 
@@ -68,57 +76,128 @@ else
 
 }
 
-@if (keepers != null && keepers.Any())
-{
-    <div>
-        <a href="/KeepersPredicted"
-           style="display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;">
-            Get Results for Keepers
-        </a>
-    </div>
+@{
+    var resultType = "";
+
+    if (keepers != null && keepers.Any())
+        resultType = "keepers";
+    else if (centrebacks != null && centrebacks.Any())
+        resultType = "centrebacks";
+    else if (wingfullbacks != null && wingfullbacks.Any())
+        resultType = "wingfullbacks";
+    else if (defmids != null && defmids.Any())
+        resultType = "defmids";
+    else if (mids != null && mids.Any())
+        resultType = "mids";
+    else if (wingers != null && wingers.Any())
+        resultType = "wings";
+
+    else if (strikers != null && strikers.Any())
+        resultType = "sts";
+   
 }
 
-@if (centrebacks != null && centrebacks.Any())
+@switch (resultType)
 {
-    <div>
-        <a href="/CBsPredicted"
-           style="display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;">
-            Get Results for CentreBacks
-        </a>
-    </div>
+    case "keepers":
+        <div>
+            <a href="/KeepersPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for Keepers
+            </a>
+        </div>
+        break;
+
+    case "centrebacks":
+        <div>
+            <a href="/CBsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for CentreBacks
+            </a>
+        </div>
+        break;
+
+    case "wingfullbacks":
+        <div>
+            <a href="/WFBsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for Wing/FullBacks
+            </a>
+        </div>
+        break;
+
+    case "defmids":
+        <div>
+            <a href="/DMsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for DefMids
+            </a>
+        </div>
+        break;
+
+    case "mids":
+        <div>
+            <a href="/MsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for Midfielders
+            </a>
+        </div>
+        break;
+
+    case "wings":
+        <div>
+            <a href="/WsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for Wingers
+            </a>
+        </div>
+        break;
+    case "sts":
+        <div>
+            <a href="/STsPredicted"
+               style="display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;">
+                Get Results for Strikers
+            </a>
+        </div>
+        break;
 }
 
 
-@if (wingfullbacks != null && wingfullbacks.Any())
-{
-    <div>
-        <a href="/WFBsPredicted"
-           style="display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;">
-            Get Results for Wing/FullBacks
-        </a>
-    </div>
-}
 @if (!string.IsNullOrEmpty(selectedPlayerType))
 {
     <div>
@@ -134,6 +213,10 @@ else
     public List<Keeper> keepers = new();
     public List<CentreBack> centrebacks = new();
     public List<WingFullBack> wingfullbacks = new();
+    public List<DefMid> defmids = new();
+    public List<Mid> mids = new();
+    public List<Winger> wingers = new();
+    public List<Striker> strikers = new();
 
     private void PlayerTypeChanged(ChangeEventArgs e) { selectedPlayerType = e.Value?.ToString(); }
 
@@ -190,19 +273,51 @@ else
                 break;
 
             case "Defensive Midfielder":
-                // Parse as Def Midfielder
+                try
+                {
+                    defmids = DMParser.ParseDefMids(html);
+                    DMState.DefMids = defmids;
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing DefMid file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Midfielder":
-                // Parse as Midfielder
+                try
+                {
+                    mids = MParser.ParseMids(html);
+                    MState.Mids = mids;
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing Midfielder file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Winger":
-                // Parse as Winger
+                try
+                {
+                    wingers = WParser.ParseWingers(html);
+                    WState.Wingers = wingers;
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing Winger file, Ensure that it is in the right format";
+                }
                 break;
 
             case "Striker":
-                // Parse as Striker
+                try
+                {
+                    strikers = STParser.ParseStrikers(html);
+                    STState.Strikers = strikers;
+                }
+                catch (Exception)
+                {
+                    error = "Error parsing Striker file, Ensure that it is in the right format";
+                }
                 break;
         }
 
@@ -212,7 +327,23 @@ else
     {
         selectedPlayerType = null;
         selectedFileName = null;
-    }
+        error = null;
 
+        keepers.Clear();
+        centrebacks.Clear();
+        wingfullbacks.Clear();
+        defmids.Clear();
+        mids.Clear();
+        wingers.Clear();
+        strikers.Clear();
+
+        KeeperState.Keepers.Clear();
+        CBState.Centrebacks.Clear();
+        WFBState.WingFullBacks.Clear();
+        DMState.DefMids.Clear();
+        MState.Mids.Clear();
+        WState.Wingers.Clear();
+        STState.Strikers.Clear();
+    }
 }
 

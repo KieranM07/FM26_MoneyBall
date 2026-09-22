@@ -25,3 +25,4 @@ dump.raw.txt
 packages/
 *.nupkg
 *.model
+MoneyBallApp/Properties/PublishProfiles/FolderProfile.pubxml

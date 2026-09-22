@@ -1,0 +1,354 @@
+﻿@page "/MsPredicted"
+
+@using MoneyBallApp.Components.States
+@using MoneyBallApp.Models
+@using MoneyBallApp.Services
+
+@rendermode InteractiveServer
+
+@inject MState MState
+@inject MPredictorService MPredictor
+
+<PageTitle>Predicted</PageTitle>
+
+<h1>Money Ball Valuation App</h1>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p>@error</p>
+}
+<button class="btn btn-primary" @onclick="TogglePlayers">
+    @(allPlayers ? "Show Top 25" : "Show Top 100")
+</button>
+
+<button class="btn btn-primary" @onclick="ToggleView">
+    @(expanded ? "Show Standard View" : "Show Expanded View")
+</button>
+
+@if (!hasPredictions)
+{
+    <p>No predictions found.</p>
+    <p>Ensure Player Type selection is correct and the data is in the correct view for exporting.</p>
+}
+else
+{
+    if (!allPlayers)
+    {
+        if (!expanded)
+        {
+            <h1>Top 25 Midfielders by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var mid in topMids)
+                    {
+                        <tr>
+                            <td>@mid.PlayerName</td>
+                            <td>£@mid.TransferValue</td>
+                            <td>£@mid.PredictedValue</td>
+                            <td>
+                                £@(mid.PredictedValue.Value - mid.TransferValue.Value)
+                            </td>
+                            <td>@mid.Age</td>
+                            <td>@mid.Club</td>
+                            <td>@mid.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 25 Midfielders by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Fouls Made</th>
+                        <th>Distance per 90</th>
+                        <th>Key Passes per 90</th>
+                        <th>Crosses Completed per 90</th>
+                        <th>PsP</th>
+                        <th>Tackles Completed per 90</th>
+                        <th>Conversion Percentage</th>
+                        <th>Free Kick Shots</th>
+                        <th>Minutes per Game</th>
+                        <th>Red Cards</th>
+                        <th>Yellow Cards</th>
+                        <th>Open Play Crosses Completed per 90</th>
+                        <th>Clear Cut Chances Created</th>
+                        <th>Pass Completion Percentage</th>
+                        <th>Assists per 90</th>
+                        <th>Key Tackles per 90</th>
+                        <th>Pressures Completed per 90</th>
+                        <th>Pressures Attempted per 90</th>
+                        <th>Goals from Outside the Box</th>
+                        <th>Goals per 90 Minutes</th>
+                        <th>Shots from Outside the Box per 90 Minutes</th>
+                        <th>Dribbles per 90</th>
+                        <th>Progressive Passes per 90</th>
+                        <th>Chances Created per 90</th>
+                        <th>Passes Completed per 90</th>
+                        <th>Open Play Key Passes per 90</th>
+                        <th>Passes Attempted per 90</th>
+                        <th>Sprints per 90</th>
+                        <th>Possession Lost per 90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var mid in topMids)
+                    {
+                        <tr>
+                            <td>@mid.PlayerName</td>
+                            <td>£@mid.TransferValue</td>
+                            <td>£@mid.PredictedValue</td>
+                            <td>
+                                £@(mid.PredictedValue.Value - mid.TransferValue.Value)
+                            </td>
+                            <td>@mid.Age</td>
+                            <td>@mid.Club</td>
+                            <td>@mid.Nation</td>
+
+                            <td>@mid.FoulsMade</td>
+                            <td>@mid.Dist90</td>
+                            <td>@mid.KeyPassesper90</td>
+                            <td>@mid.CrossesCompletedper90</td>
+                            <td>@mid.PsP</td>
+                            <td>@mid.TacklesCompletedper90</td>
+                            <td>@mid.ConvPercentage</td>
+                            <td>@mid.FreeKickShots</td>
+                            <td>@mid.MinsGm</td>
+                            <td>@mid.RedCards</td>
+                            <td>@mid.YellowCards</td>
+                            <td>@mid.OpenPlayCrossesCompletedper90</td>
+                            <td>@mid.ClearCutChancesCreated</td>
+                            <td>@mid.PassCompletionPercentage</td>
+                            <td>@mid.Asts90</td>
+                            <td>@mid.KeyTacklesper90</td>
+                            <td>@mid.PresC90</td>
+                            <td>@mid.PresA90</td>
+                            <td>@mid.GoalsFromOutsideTheBox</td>
+                            <td>@mid.Goalsper90minutes</td>
+                            <td>@mid.ShotsFromOutsideTheBoxPer90minutes</td>
+                            <td>@mid.Dribblesper90</td>
+                            <td>@mid.ProgressivePassesper90</td>
+                            <td>@mid.ChancesCreatedper90</td>
+                            <td>@mid.PassesCompletedper90</td>
+                            <td>@mid.OpenPlayKeyPassesper90</td>
+                            <td>@mid.PassesAttemptedper90</td>
+                            <td>@mid.Sprints90</td>
+                            <td>@mid.PossessionLostper90</td>
+                            <td>@mid.MistakesLeadingtoGoals</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        if (!expanded)
+        {
+            <h1>Top 100 Midfielders by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var mid in allMids)
+                    {
+                        <tr>
+                            <td>@mid.PlayerName</td>
+                            <td>£@mid.TransferValue</td>
+                            <td>£@mid.PredictedValue</td>
+                            <td>
+                                £@(mid.PredictedValue.Value - mid.TransferValue.Value)
+                            </td>
+                            <td>@mid.Age</td>
+                            <td>@mid.Club</td>
+                            <td>@mid.Nation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h1>Top 100 Midfielders by Valuation Difference</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Actual</th>
+                        <th>Predicted</th>
+                        <th>Difference</th>
+                        <th>Age</th>
+                        <th>Current Club</th>
+                        <th>Nationality</th>
+                        <th>Fouls Made</th>
+                        <th>Distance per 90</th>
+                        <th>Key Passes per 90</th>
+                        <th>Crosses Completed per 90</th>
+                        <th>PsP</th>
+                        <th>Tackles Completed per 90</th>
+                        <th>Conversion Percentage</th>
+                        <th>Free Kick Shots</th>
+                        <th>Minutes per Game</th>
+                        <th>Red Cards</th>
+                        <th>Yellow Cards</th>
+                        <th>Open Play Crosses Completed per 90</th>
+                        <th>Clear Cut Chances Created</th>
+                        <th>Pass Completion Percentage</th>
+                        <th>Assists per 90</th>
+                        <th>Key Tackles per 90</th>
+                        <th>Pressures Completed per 90</th>
+                        <th>Pressures Attempted per 90</th>
+                        <th>Goals from Outside the Box</th>
+                        <th>Goals per 90 Minutes</th>
+                        <th>Shots from Outside the Box per 90 Minutes</th>
+                        <th>Dribbles per 90</th>
+                        <th>Progressive Passes per 90</th>
+                        <th>Chances Created per 90</th>
+                        <th>Passes Completed per 90</th>
+                        <th>Open Play Key Passes per 90</th>
+                        <th>Passes Attempted per 90</th>
+                        <th>Sprints per 90</th>
+                        <th>Possession Lost per 90</th>
+                        <th>Mistakes Leading to Goals</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var mid in allMids)
+                    {
+                        <tr>
+                            <td>@mid.PlayerName</td>
+                            <td>£@mid.TransferValue</td>
+                            <td>£@mid.PredictedValue</td>
+                            <td>
+                                £@(mid.PredictedValue.Value - mid.TransferValue.Value)
+                            </td>
+                            <td>@mid.Age</td>
+                            <td>@mid.Club</td>
+                            <td>@mid.Nation</td>
+
+                            <td>@mid.FoulsMade</td>
+                            <td>@mid.Dist90</td>
+                            <td>@mid.KeyPassesper90</td>
+                            <td>@mid.CrossesCompletedper90</td>
+                            <td>@mid.PsP</td>
+                            <td>@mid.TacklesCompletedper90</td>
+                            <td>@mid.ConvPercentage</td>
+                            <td>@mid.FreeKickShots</td>
+                            <td>@mid.MinsGm</td>
+                            <td>@mid.RedCards</td>
+                            <td>@mid.YellowCards</td>
+                            <td>@mid.OpenPlayCrossesCompletedper90</td>
+                            <td>@mid.ClearCutChancesCreated</td>
+                            <td>@mid.PassCompletionPercentage</td>
+                            <td>@mid.Asts90</td>
+                            <td>@mid.KeyTacklesper90</td>
+                            <td>@mid.PresC90</td>
+                            <td>@mid.PresA90</td>
+                            <td>@mid.GoalsFromOutsideTheBox</td>
+                            <td>@mid.Goalsper90minutes</td>
+                            <td>@mid.ShotsFromOutsideTheBoxPer90minutes</td>
+                            <td>@mid.Dribblesper90</td>
+                            <td>@mid.ProgressivePassesper90</td>
+                            <td>@mid.ChancesCreatedper90</td>
+                            <td>@mid.PassesCompletedper90</td>
+                            <td>@mid.OpenPlayKeyPassesper90</td>
+                            <td>@mid.PassesAttemptedper90</td>
+                            <td>@mid.Sprints90</td>
+                            <td>@mid.PossessionLostper90</td>
+                            <td>@mid.MistakesLeadingtoGoals</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}
+
+@code {
+    private List<Mid> mids = new();
+    private List<Mid> topMids = new();
+    private List<Mid> allMids = new();
+    private bool hasPredictions = true;
+    private string? error = null;
+    private bool allPlayers = false;
+    private bool expanded = false;
+
+    protected override void OnInitialized()
+    {
+        mids = MState.Mids;
+      
+        if (mids.Any())
+        {
+            try
+            {
+                MPredictor.PredictMids(mids);
+                allMids = mids.Where(m => m.PredictedValue.HasValue && m.TransferValue.HasValue)
+                .OrderByDescending(m =>
+                    (m.PredictedValue!.Value - m.TransferValue!.Value))
+                .Take(100)
+                .ToList();
+
+                topMids = mids
+                .Where(m => m.PredictedValue.HasValue && m.TransferValue.HasValue)
+                .OrderByDescending(m =>
+                    (m.PredictedValue!.Value - m.TransferValue!.Value))
+                .Take(25)
+                .ToList();
+                hasPredictions = topMids.Any();
+
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+            }
+            
+        }
+    }
+
+    private void TogglePlayers()
+    {
+        allPlayers = !allPlayers;
+    }
+
+    private void ToggleView()
+    {
+        expanded = !expanded;
+    }
+    
+}
