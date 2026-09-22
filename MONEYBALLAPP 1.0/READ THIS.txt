@@ -1,0 +1,6 @@
+Database views for export are contained in FM26DATABASEVIEWS
+
+
+Run MoneyBallApp.exe within the APP folder
+
+Type http://localhost:5000 into your browser (or whatever link appears in the console where it says Now listening on: )
