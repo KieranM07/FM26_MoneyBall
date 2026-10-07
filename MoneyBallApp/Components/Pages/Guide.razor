@@ -1,52 +1,195 @@
 ﻿@page "/Guide"
 
-<PageTitle>How to use</PageTitle>
+<PageTitle>How to Use | Money Ball APP</PageTitle>
 
-<h1>Money Ball Valuation App</h1>
-<p>@Info</p>
+<div class="guide-container">
 
-<div>
-    <h2>How to use</h2>
-    <p>@Step1</p>
-    <p>
-        @Step2Text<a href="@Step2Url" target="_blank">fmscout.com</a>
-    </p>
-    <p>@Step3</p>
-    <p>@Step4</p>
-    <p>@Step5</p>
-    <p>@Step6</p>
-    <p>@Step7</p>
-    <p>@Step8</p>
-    <p>@Step9</p>
-    <p>@Step10</p>
-    <p>@Step11</p>
-    <p>@Step12Text</p>
-    <p>@Step12Help</p>
-    <p>@Final</p>
+    <header class="guide-header">
+        <span class="guide-badge">GUIDE</span>
+        <h1>Money Ball Valuation App</h1>
+        <p>
+            Follow the steps below to export your Football Manager 26
+            player data and generate player valuations.
+        </p>
+    </header>
+
+    <section class="guide-section">
+
+        <h2>How to use</h2>
+
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Install R2Modman</h3>
+                    <p>
+                        Download and install R2Modman before continuing.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Download the player export plugin</h3>
+                    <p>
+                        Download the Football Manager 26 player export plugin
+                        from
+                        <a href="https://www.fmscout.com/a-fm26-player-csv-export.html"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            FM Scout
+                        </a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Create a Football Manager 26 profile</h3>
+                    <p>
+                        Open R2Modman and create a profile for Football Manager 26.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Install BepInEx</h3>
+                    <p>
+                        In R2Modman's <strong>Online</strong> section, install
+                        <strong>BepInExPack_FootballManager26</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Open the Plugins folder</h3>
+                    <p>
+                        Navigate to:
+                    </p>
+
+                    <code>
+                        DRIVE:\Users\USER\AppData\Roaming\r2modmanPlus-local\FootballManager26\profiles\PROFILE/BepInEx/Plugins
+                    </code>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>Add the player export plugin</h3>
+                    <p>
+                        Copy the downloaded player export plugin into the
+                        <strong>Plugins</strong> folder.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <h3>Start Football Manager modded</h3>
+                    <p>
+                        Return to R2Modman and select
+                        <strong>Start Modded</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">8</div>
+                <div class="step-content">
+                    <h3>Open your player database</h3>
+                    <p>
+                        Load your chosen save and navigate to the player database.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">9</div>
+                <div class="step-content">
+                    <h3>Import the player view</h3>
+                    <p>
+                        Import the chosen player type view into Football Manager.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">10</div>
+                <div class="step-content">
+                    <h3>Select your players</h3>
+                    <p>
+                        Select the group of players you want to value.
+                        You can export up to <strong>5,000 players</strong> at once.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">11</div>
+                <div class="step-content">
+                    <h3>Export the players</h3>
+                    <p>
+                        Press <kbd>CTRL</kbd> + <kbd>P</kbd> to export the selected
+                        players.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">12</div>
+                <div class="step-content">
+                    <h3>Upload the exported file</h3>
+                    <p>
+                        Navigate to the <strong>Upload Players</strong> page
+                        and upload the exported HTML file.
+                    </p>
+
+                    <div class="note">
+                        <strong>Where is the file?</strong>
+                        <p>
+                            The export should be located in:
+                        </p>
+
+                        <code>
+                            Documents/Sports Interactive/Football Manager 26/FM26PlayerExport by vinteset/Exports HTML
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="result-section">
+        <p>
+            Once your players have been uploaded, Money Ball will process
+            the data and provide player valuations.
+        </p>
+
+        <a href="/input" class="primary-button">
+            Start Valuing Players
+        </a>
+    </section>
+
+    <section class="help-section">
+        <h2>Need help with the mod?</h2>
+        <p>
+            For more information about the player export mod, visit
+            <a href="https://www.fmscout.com/a-fm26-player-csv-export.html"
+               target="_blank"
+               rel="noopener noreferrer">
+                FM Scout
+            </a>.
+        </p>
+    </section>
+
 </div>
-
-<div>
-    <p>
-        @ModHelp<a href="@Step2Url" target="_blank">fmscout.com</a>
-    </p>
-</div>
-
-@code {
-    private string Info = "This program uses machine learning models to value Football Manager 26 players.";
-    private string Step1 = "Step 1: Install R2Modman";
-    private string Step2Text { get; set; } = "Step 2: Download BepInEX Plugin from ";
-    private string Step2Url { get; set; } = "https://www.fmscout.com/a-fm26-player-csv-export.html";
-    private string Step3 = "Step 3: Create a Football Manager 26 profile on R2Modman";
-    private string Step4 = "Step 4: Install BepInExPack_FootballManager26 from the avaliable mods in the Online section";
-    private string Step5 = "Step 5: Navigate to the folder r2modmanPlus-local/FootballManager26/profiles/YOUR PROFILE NAME/BepInEx/Plugins";
-    private string Step6 = "Step 6: Paste the downloaded player export plugin into this folder";
-    private string Step7 = "Step 7: Press Start Modded";
-    private string Step8 = "Step 8: Load into chosen save and navigate to the player database";
-    private string Step9 = "Step 9: Import chosen player type view";
-    private string Step10 = "Step 10: Select a group of players you want from the player database (up to 5000)";
-    private string Step11 = "Step 11: Press CTRL + P to export the players";
-    private string Step12Text = "Step 12: Navigate to the Upload Players page and upload the exported HTML file ";
-    private string Step12Help = "Note: This will be in Documents/Sports Interactive/Football Manager 26/FM26PlayerExport by vinteset/Exports HTML ";
-    private string Final = "The model will then provide player valuations";
-    private string ModHelp { get; set; } = "For more information about the mod please read the page on ";
-}

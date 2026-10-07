@@ -10,7 +10,7 @@
 @inject WPredictorService WPredictor
 
 <PageTitle>Predicted</PageTitle>
-
+<div class="predicted-page">
 <h1>Money Ball Valuation App</h1>
 
 @if (!string.IsNullOrEmpty(error))
@@ -34,10 +34,11 @@ else
 {
     if (!allPlayers)
     {
+        <h1>Top 25 Wingers by Valuation Difference</h1>
         if (!expanded)
         {
-            <h1>Top 25 Wingers by Valuation Difference</h1>
-            <table class="table">
+            <div class="table-container">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -56,9 +57,15 @@ else
                         <tr>
                             <td>@winger.PlayerName</td>
                             <td>£@winger.TransferValue</td>
-                            <td>£@winger.PredictedValue</td>
                             <td>
-                                £@(winger.PredictedValue.Value - winger.TransferValue.Value)
+                                @(winger.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{winger.PredictedValue}")
+                            </td>
+                            <td>
+                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
                             </td>
                             <td>@winger.Age</td>
                             <td>@winger.Club</td>
@@ -67,11 +74,12 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
         else
         {
-            <h1>Top 25 Wingers by Valuation Difference</h1>
-            <table class="table">
+           <div class="table-container">
+           <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -122,9 +130,15 @@ else
                         <tr>
                             <td>@winger.PlayerName</td>
                             <td>£@winger.TransferValue</td>
-                            <td>£@winger.PredictedValue</td>
                             <td>
-                                £@(winger.PredictedValue.Value - winger.TransferValue.Value)
+                                @(winger.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{winger.PredictedValue}")
+                            </td>
+                            <td>
+                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
                             </td>
                             <td>@winger.Age</td>
                             <td>@winger.Club</td>
@@ -167,14 +181,17 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
     }
     else
     {
+        <h1>Top 100 Wingers by Valuation Difference</h1>
         if (!expanded)
         {
-            <h1>Top 100 Wingers by Valuation Difference</h1>
-            <table class="table">
+           
+           <div class="table-container">
+           <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -193,9 +210,15 @@ else
                         <tr>
                             <td>@winger.PlayerName</td>
                             <td>£@winger.TransferValue</td>
-                            <td>£@winger.PredictedValue</td>
                             <td>
-                                £@(winger.PredictedValue.Value - winger.TransferValue.Value)
+                                @(winger.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{winger.PredictedValue}")
+                            </td>
+                            <td>
+                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
                             </td>
                             <td>@winger.Age</td>
                             <td>@winger.Club</td>
@@ -204,11 +227,13 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
         else
         {
-            <h1>Top 100 Midfielders by Valuation Difference</h1>
-            <table class="table">
+    
+           <div class="table-container">
+           <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -259,9 +284,15 @@ else
                         <tr>
                             <td>@winger.PlayerName</td>
                             <td>£@winger.TransferValue</td>
-                            <td>£@winger.PredictedValue</td>
                             <td>
-                                £@(winger.PredictedValue.Value - winger.TransferValue.Value)
+                                @(winger.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{winger.PredictedValue}")
+                            </td>
+                            <td>
+                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
                             </td>
                             <td>@winger.Age</td>
                             <td>@winger.Club</td>
@@ -304,9 +335,11 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
     }
 }
+</div>
 
 @code {
     private List<Winger> wingers = new();

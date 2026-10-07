@@ -11,6 +11,7 @@
 
 <PageTitle>Predicted</PageTitle>
 
+<div class="predicted-page">
 <h1>Money Ball Valuation App</h1>
 
 @if (!string.IsNullOrEmpty(error))
@@ -32,46 +33,57 @@
 }
 else
 {
+    
     if (!allPlayers)
     {
+        <h1>Top 25 Strikers by Valuation Difference</h1>
         if (!expanded)
         {
-            <h1>Top 25 Strikers by Valuation Difference</h1>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var striker in topStrikers)
-                    {
+            
+          
+                <div class="table-container">
+                <table class="table table-striped table-hover">
+                    <thead>
                         <tr>
-                            <td>@striker.PlayerName</td>
-                            <td>£@striker.TransferValue</td>
-                            <td>£@striker.PredictedValue</td>
-                            <td>
-                                £@(striker.PredictedValue.Value - striker.TransferValue.Value)
-                            </td>
-                            <td>@striker.Age</td>
-                            <td>@striker.Club</td>
-                            <td>@striker.Nation</td>
+                            <th>Player</th>
+                            <th>Actual</th>
+                            <th>Predicted</th>
+                            <th>Difference</th>
+                            <th>Age</th>
+                            <th>Current Club</th>
+                            <th>Nationality</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var striker in topStrikers)
+                        {
+                            <tr>
+                                <td>@striker.PlayerName</td>
+                                <td>£@striker.TransferValue</td>
+                                <td>
+                                    @(striker.PredictedValue < 0
+                                        ? "Model is not accurately able to predict this value"
+                                        : $"£{striker.PredictedValue}")
+                                </td>
+                                <td>
+                                    @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
+                                        ? "Player's Market value is higher than prediction"
+                                        : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
+                                </td>
+                                <td>@striker.Age</td>
+                                <td>@striker.Club</td>
+                                <td>@striker.Nation</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
         else
-        {
-            <h1>Top 25 Strikers by Valuation Difference</h1>
-            <table class="table">
+        {    
+            <div class="table-container">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -101,7 +113,6 @@ else
                         <th>Clear Cut Chances Created</th>
                         <th>Chances Created per 90</th>
                         <th>Assists per 90</th>
-                        <th>Sprints per 90</th>
                         <th>NP-xG</th>
                         <th>Distance per 90</th>
                         <th>Fouls Against</th>
@@ -117,9 +128,15 @@ else
                         <tr>
                             <td>@striker.PlayerName</td>
                             <td>£@striker.TransferValue</td>
-                            <td>£@striker.PredictedValue</td>
                             <td>
-                                £@(striker.PredictedValue.Value - striker.TransferValue.Value)
+                                @(striker.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{striker.PredictedValue}")
+                            </td>
+                            <td>
+                                @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
                             </td>
                             <td>@striker.Age</td>
                             <td>@striker.Club</td>
@@ -145,7 +162,6 @@ else
                             <td>@striker.ClearCutChancesCreated</td>
                             <td>@striker.ChancesCreatedper90</td>
                             <td>@striker.Asts90</td>
-                            <td>@striker.Sprints90</td>
                             <td>@striker.NPxG</td>
                             <td>@striker.Dist90</td>
                             <td>@striker.FoulsAgainst</td>
@@ -157,14 +173,16 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
     }
     else
     {
+        <h1>Top 100 Strikers by Valuation Difference</h1>
         if (!expanded)
         {
-            <h1>Top 100 Wingers by Valuation Difference</h1>
-            <table class="table">
+            <div class="table-container">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -183,9 +201,15 @@ else
                         <tr>
                             <td>@striker.PlayerName</td>
                             <td>£@striker.TransferValue</td>
-                            <td>£@striker.PredictedValue</td>
                             <td>
-                                £@(striker.PredictedValue.Value - striker.TransferValue.Value)
+                                @(striker.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{striker.PredictedValue}")
+                            </td>
+                            <td>
+                                @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
                             </td>
                             <td>@striker.Age</td>
                             <td>@striker.Club</td>
@@ -194,11 +218,12 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
         else
         {
-            <h1>Top 100 Midfielders by Valuation Difference</h1>
-            <table class="table">
+            <div class="table-container">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -228,7 +253,6 @@ else
                         <th>Clear Cut Chances Created</th>
                         <th>Chances Created per 90</th>
                         <th>Assists per 90</th>
-                        <th>Sprints per 90</th>
                         <th>NP-xG</th>
                         <th>Distance per 90</th>
                         <th>Fouls Against</th>
@@ -244,9 +268,15 @@ else
                         <tr>
                             <td>@striker.PlayerName</td>
                             <td>£@striker.TransferValue</td>
-                            <td>£@striker.PredictedValue</td>
                             <td>
-                                £@(striker.PredictedValue.Value - striker.TransferValue.Value)
+                                @(striker.PredictedValue < 0
+                                    ? "Model is not accurately able to predict this value"
+                                    : $"£{striker.PredictedValue}")
+                            </td>
+                            <td>
+                                @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
+                                    ? "Player's Market value is higher than prediction"
+                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
                             </td>
                             <td>@striker.Age</td>
                             <td>@striker.Club</td>
@@ -272,7 +302,6 @@ else
                             <td>@striker.ClearCutChancesCreated</td>
                             <td>@striker.ChancesCreatedper90</td>
                             <td>@striker.Asts90</td>
-                            <td>@striker.Sprints90</td>
                             <td>@striker.NPxG</td>
                             <td>@striker.Dist90</td>
                             <td>@striker.FoulsAgainst</td>
@@ -284,9 +313,11 @@ else
                     }
                 </tbody>
             </table>
+            </div>
         }
     }
 }
+</div>
 
 @code {
     private List<Striker> strikers = new();
@@ -313,9 +344,9 @@ else
                 .ToList();
 
                 topStrikers = strikers
-                .Where(w => w.PredictedValue.HasValue && w.TransferValue.HasValue)
-                .OrderByDescending(m =>
-                    (m.PredictedValue!.Value - m.TransferValue!.Value))
+                .Where(st => st.PredictedValue.HasValue && st.TransferValue.HasValue)
+                .OrderByDescending(st =>
+                    (st.PredictedValue!.Value - st.TransferValue!.Value))
                 .Take(25)
                 .ToList();
                 hasPredictions = topStrikers.Any();

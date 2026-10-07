@@ -2,13 +2,98 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Money Ball Valuation App</h1>
-<h1>@Info</h1>
+<div class="landing-page">
+    <section class="hero">
+        <div class="hero-card">
 
-<h3>@Disclaimer</h3>
+            <h1>Money Ball Valuations.</h1>
+
+            <p class="hero-description">
+                Use a trained machine learning model to estimate the value of Football Manager 26
+                players.
+            </p>
+
+            <div class="hero-actions">
+                <a href="/input" class="primary-button">
+                    Start Valuing Players
+                </a>
+
+                <a href="/Guide" class="secondary-button">
+                    User Guide
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 style ="text-align: center;">Uses</h2>
+
+        <div class="card-grid">
+
+            <div class="info-card">
+                <h3>Transfer Decisions</h3>
+                <p>
+                    Compare market asking prices against estimated player values before making an offer.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Find Bargains</h3>
+                <p>
+                    Discover players whose predicted value suggests they could be worth a closer look.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Squad Building</h3>
+                <p>
+                    Evaluate potential signings and build a stronger squad with data to support your choices.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="disclaimer-card">
+
+            <div>
+                <h3>Disclaimer</h3>
+
+                <p>
+                    @Info
+                </p>
+
+                <p>
+                    @Disclaimer
+                </p>
+
+                <p class="disclaimer-small">
+                   Player valuations are estimates and should
+                    not be treated as guaranteed values. 
+                    <br />
+                    This is especially true in the lower leagues as it is more prone to mistakes with lower valued players.
+                </p>
+
+                <p>
+                    @FM
+                </p>
+
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
 
 @code {
-    private string Info = "This program uses machine learning models to value Football Manager 26 players.";
+    private string Info =
+        "This program uses machine learning models to value Football Manager 26 players.";
 
-    private string Disclaimer = "Machine learning models may make mistakes, if you get sacked in Football Manager I am not responsible.";
+    private string Disclaimer =
+        "Machine learning models may make mistakes. If you get sacked in Football Manager as a result of signings, I am not responsible.";
+    private string FM =
+        "I am not affliated with Football Manager or Sports interactive, this is simply a passion project";
 }

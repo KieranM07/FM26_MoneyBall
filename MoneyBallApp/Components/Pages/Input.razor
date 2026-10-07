@@ -20,8 +20,9 @@
 @inject WState WState
 @inject STState STState
 
-<h3>Upload Players</h3>
 
+<div class="input-container">
+<h3>Upload Players</h3>
 @if (string.IsNullOrEmpty(selectedPlayerType))
 {
 	<label for="playerType">Player type:</label>
@@ -45,8 +46,7 @@ else
 
 	<label>Select HTML file:</label>
 
-	<label for="htmlFile"
-	style="display: inline-block; padding: 5px 10px; border: 1px solid #888; background: #eee; cursor: pointer; margin-left: 5px;">
+	<label for="htmlFile" class="html-button">
 		Choose file
 	</label>
 
@@ -101,13 +101,7 @@ else
 {
     case "keepers":
         <div>
-            <a href="/KeepersPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/KeepersPredicted" class="file-button">
                 Get Results for Keepers
             </a>
         </div>
@@ -115,13 +109,7 @@ else
 
     case "centrebacks":
         <div>
-            <a href="/CBsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/CBsPredicted" class="file-button">
                 Get Results for CentreBacks
             </a>
         </div>
@@ -129,13 +117,7 @@ else
 
     case "wingfullbacks":
         <div>
-            <a href="/WFBsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/WFBsPredicted" class="file-button">
                 Get Results for Wing/FullBacks
             </a>
         </div>
@@ -143,13 +125,7 @@ else
 
     case "defmids":
         <div>
-            <a href="/DMsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/DMsPredicted" class="file-button">
                 Get Results for DefMids
             </a>
         </div>
@@ -157,13 +133,7 @@ else
 
     case "mids":
         <div>
-            <a href="/MsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/MsPredicted" class="file-button">
                 Get Results for Midfielders
             </a>
         </div>
@@ -171,26 +141,14 @@ else
 
     case "wings":
         <div>
-            <a href="/WsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/WsPredicted" class="file-button">
                 Get Results for Wingers
             </a>
         </div>
         break;
     case "sts":
         <div>
-            <a href="/STsPredicted"
-               style="display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;">
+            <a href="/STsPredicted" class="file-button">
                 Get Results for Strikers
             </a>
         </div>
@@ -201,10 +159,10 @@ else
 @if (!string.IsNullOrEmpty(selectedPlayerType))
 {
     <div>
-        <button @onclick="ResetPlayerType" style="padding-top: 10px; padding-bottom: 10px;">Back</button>
+        <button @onclick="ResetPlayerType" class="reset-button">Back</button>
     </div>
 }
-
+</div>
 @code {
     private string? selectedPlayerType;
     private string? selectedFileName;
