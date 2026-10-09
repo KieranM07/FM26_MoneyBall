@@ -26,6 +26,52 @@
     @(expanded ? "Show Standard View" : "Show Expanded View")
 </button>
 
+@if (!expanded)
+{
+    <select @bind="choice" @bind:after="UpdateStrikers">
+        <option value="Difference">Difference</option>
+        <option value="Predicted">Predicted Value</option>
+        <option value="Actual">Actual Value</option>
+        <option value="Age">Age</option>
+    </select>
+}
+else if (expanded)
+{
+    <select @bind="choice" @bind:after="UpdateStrikers">
+        <option value="Difference">Difference</option>
+        <option value="Predicted">Predicted Value</option>
+        <option value="Actual">Actual Value</option>
+        <option value="Age">Age</option>
+        <option value="MSLG">Minutes Since Last Goal</option>
+        <option value="Goals">Goals</option>
+        <option value="Assists">Assists</option>
+        <option value="Goalsper90minutes">Goals per 90 Minutes</option>
+        <option value="ConvPercentage">Conversion Percentage</option>
+        <option value="GoalsFromOutsideTheBox">Goals from Outside the Box</option>
+        <option value="Off">Offside</option>
+        <option value="Shots">Shots</option>
+        <option value="Shot90">Shots per 90</option>
+        <option value="ShotsOnTarget">Shots on Target</option>
+        <option value="ShotsOnTargetper90">Shots on Target per 90</option>
+        <option value="ShotsOnTargetPercentage">Shots on Target Percentage</option>
+        <option value="xGShot">xG per Shot</option>
+        <option value="xG">Expected Goals (xG)</option>
+        <option value="NPxG">Non-Penalty xG</option>
+        <option value="NPxG90">Non-Penalty xG per 90</option>
+        <option value="ClearCutChancesCreated">Clear-Cut Chances Created</option>
+        <option value="ChancesCreatedper90">Chances Created per 90</option>
+        <option value="Asts90">Assists per 90</option>
+        <option value="PassCompletionPercentage">Pass Completion Percentage</option>
+        <option value="Dribblesper90">Dribbles per 90</option>
+        <option value="PossessionLostper90">Possession Lost per 90</option>
+        <option value="PresC90">Pressures per 90</option>
+        <option value="Dist90">Distance per 90</option>
+        <option value="FoulsAgainst">Fouls Against</option>
+        <option value="MinsGm">Minutes per Game</option>
+    </select>
+}
+
+
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
@@ -34,54 +80,9 @@
 else
 {
     
-    if (!allPlayers)
+    <h1>Top @playercount Strikers by Valuation Difference</h1>
+    if (!expanded)
     {
-        <h1>Top 25 Strikers by Valuation Difference</h1>
-        if (!expanded)
-        {
-            
-          
-                <div class="table-container">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Player</th>
-                            <th>Actual</th>
-                            <th>Predicted</th>
-                            <th>Difference</th>
-                            <th>Age</th>
-                            <th>Current Club</th>
-                            <th>Nationality</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var striker in topStrikers)
-                        {
-                            <tr>
-                                <td>@striker.PlayerName</td>
-                                <td>£@striker.TransferValue</td>
-                                <td>
-                                    @(striker.PredictedValue < 0
-                                        ? "Model is not accurately able to predict this value"
-                                        : $"£{striker.PredictedValue}")
-                                </td>
-                                <td>
-                                    @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
-                                        ? "Player's Market value is higher than prediction"
-                                        : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
-                                </td>
-                                <td>@striker.Age</td>
-                                <td>@striker.Club</td>
-                                <td>@striker.Nation</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {    
             <div class="table-container">
             <table class="table table-striped table-hover">
                 <thead>
@@ -93,281 +94,230 @@ else
                         <th>Age</th>
                         <th>Current Club</th>
                         <th>Nationality</th>
-                        <th>Minutes Since Last Goal</th>
-                        <th>Goals</th>
-                        <th>Off</th>
-                        <th>Shots on Target</th>
-                        <th>Shot per 90</th>
-                        <th>Shots on Target Percentage</th>
-                        <th>Goals From Outside The Box</th>
-                        <th>NP-xG per 90</th>
-                        <th>Dribbles per 90</th>
-                        <th>Conversion Percentage</th>
-                        <th>xG</th>
-                        <th>Pressures Completed per 90</th>
-                        <th>Shots on Target per 90</th>
-                        <th>Shots</th>
-                        <th>xG per Shot</th>
-                        <th>Possession Lost per 90</th>
-                        <th>Pass Completion Percentage</th>
-                        <th>Clear Cut Chances Created</th>
-                        <th>Chances Created per 90</th>
-                        <th>Assists per 90</th>
-                        <th>NP-xG</th>
-                        <th>Distance per 90</th>
-                        <th>Fouls Against</th>
-                        <th>Assists</th>
-                        <th>Goals per 90 Minutes</th>
-                        <th>Minutes per Goal</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach (var striker in topStrikers)
+                    @foreach (var striker in allStrikers)
                     {
                         <tr>
                             <td>@striker.PlayerName</td>
-                            <td>£@striker.TransferValue</td>
+                            <td>£@striker.TransferValue?.ToString("N0")</td>
                             <td>
                                 @(striker.PredictedValue < 0
                                     ? "Model is not accurately able to predict this value"
-                                    : $"£{striker.PredictedValue}")
+                                    : $"£{striker.PredictedValue:N0}")
                             </td>
                             <td>
                                 @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
                                     ? "Player's Market value is higher than prediction"
-                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
+                                    : $"£{(striker.PredictedValue.Value - striker.TransferValue.Value):N0}")
                             </td>
                             <td>@striker.Age</td>
                             <td>@striker.Club</td>
                             <td>@striker.Nation</td>
-
-                            <td>@striker.MinutesSinceLastGoal</td>
-                            <td>@striker.Goals</td>
-                            <td>@striker.Off</td>
-                            <td>@striker.ShotsOnTarget</td>
-                            <td>@striker.Shot90</td>
-                            <td>@striker.ShotsOnTargetPercentage</td>
-                            <td>@striker.GoalsFromOutsideTheBox</td>
-                            <td>@striker.NPxG90</td>
-                            <td>@striker.Dribblesper90</td>
-                            <td>@striker.ConvPercentage</td>
-                            <td>@striker.xG</td>
-                            <td>@striker.PresC90</td>
-                            <td>@striker.ShotsOnTargetper90</td>
-                            <td>@striker.Shots</td>
-                            <td>@striker.xGShot</td>
-                            <td>@striker.PossessionLostper90</td>
-                            <td>@striker.PassCompletionPercentage</td>
-                            <td>@striker.ClearCutChancesCreated</td>
-                            <td>@striker.ChancesCreatedper90</td>
-                            <td>@striker.Asts90</td>
-                            <td>@striker.NPxG</td>
-                            <td>@striker.Dist90</td>
-                            <td>@striker.FoulsAgainst</td>
-                            <td>@striker.Assists</td>
-                            <td>@striker.Goalsper90minutes</td>
-                            <td>@striker.MinsGm</td>
-
                         </tr>
                     }
                 </tbody>
             </table>
-            </div>
-        }
+        </div>
     }
     else
-    {
-        <h1>Top 100 Strikers by Valuation Difference</h1>
-        if (!expanded)
-        {
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
+    {    
+        <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <!-- Player info -->
+                    <th>Player</th>
+                    <th>Actual</th>
+                    <th>Predicted</th>
+                    <th>Difference</th>
+                    <th>Age</th>
+                    <th>Current Club</th>
+                    <th>Nationality</th>
+                    <!-- Goals & Finishing -->
+                    <th>Goals</th>
+                    <th>Assists</th>
+                    <th>Goals per 90</th>
+                    <th>Minutes since last Goal</th>
+                    <th>Conversion %</th>
+                    <th>Goals Outside Box</th>
+                    <th>Offsides</th>
+                    <!-- Shooting -->
+                    <th>Shots</th>
+                    <th>Shots per 90</th>
+                    <th>Shots on Target</th>
+                    <th>Shots on Target per 90</th>
+                    <th>Shots on Target %</th>
+                    <th>xG per Shot</th>
+                    <!-- Expected Goals -->
+                    <th>xG</th>
+                    <th>NPxG</th>
+                    <th>NPxG per 90</th>
+                    <!-- Creativity -->
+                    <th>Chances Created</th>
+                    <th>Chances Created per 90</th>
+                    <th>Clear-Cut Chances Created</th>
+                    <th>Assists per 90</th>
+                    <th>Passes Completed %</th>
+                    <!-- Dribbling & Possession -->
+                    <th>Dribbles per 90</th>
+                    <th>Possession Lost per 90</th>
+                    <!-- Defensive & Other -->
+                    <th>Pressures per 90</th>
+                    <th>Distance per 90</th>
+                    <th>Fouls Won</th>
+                    <th>Minutes Played per Game</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var striker in allStrikers)
+                {
                     <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
+                        <td>@striker.PlayerName</td>
+                        <td>£@striker.TransferValue?.ToString("N0")</td>
+                        <td>
+                            @(striker.PredictedValue < 0
+                                ? "Model is not accurately able to predict this value"
+                                : $"£{striker.PredictedValue:N0}")
+                        </td>
+                        <td>
+                            @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
+                                ? "Player's Market value is higher than prediction"
+                                : $"£{(striker.PredictedValue.Value - striker.TransferValue.Value):N0}")
+                        </td>
+                        <td>@striker.Age</td>
+                        <td>@striker.Club</td>
+                        <td>@striker.Nation</td>
+                        <!-- Goals & Finishing -->
+                        <td>@striker.Goals</td>
+                        <td>@striker.Assists</td>
+                        <td>@striker.Goalsper90minutes</td>
+                        <td>@striker.MinutesSinceLastGoal</td>
+                        <td>@striker.ConvPercentage</td>
+                        <td>@striker.GoalsFromOutsideTheBox</td>
+                        <td>@striker.Off</td>
+                        <!-- Shooting -->
+                        <td>@striker.Shots</td>
+                        <td>@striker.Shot90</td>
+                        <td>@striker.ShotsOnTarget</td>
+                        <td>@striker.ShotsOnTargetper90</td>
+                        <td>@striker.ShotsOnTargetPercentage</td>
+                        <td>@striker.xGShot</td>
+                        <!-- Expected Goals -->
+                        <td>@striker.xG</td>
+                        <td>@striker.NPxG</td>
+                        <td>@striker.NPxG90</td>
+                        <!-- Creativity -->
+                        <td>@striker.ClearCutChancesCreated</td>
+                        <td>@striker.ChancesCreatedper90</td>
+                        <td>@striker.ClearCutChancesCreated</td>
+                        <td>@striker.Asts90</td>
+                        <td>@striker.PassCompletionPercentage</td>
+                        <!-- Dribbling & Possession -->
+                        <td>@striker.Dribblesper90</td>
+                        <td>@striker.PossessionLostper90</td>
+                        <!-- Defensive & Other -->
+                        <td>@striker.PresC90</td>
+                        <td>@striker.Dist90</td>
+                        <td>@striker.FoulsAgainst</td>
+                        <td>@striker.MinsGm</td>
                     </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var striker in allStrikers)
-                    {
-                        <tr>
-                            <td>@striker.PlayerName</td>
-                            <td>£@striker.TransferValue</td>
-                            <td>
-                                @(striker.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{striker.PredictedValue}")
-                            </td>
-                            <td>
-                                @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
-                            </td>
-                            <td>@striker.Age</td>
-                            <td>@striker.Club</td>
-                            <td>@striker.Nation</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
-        else
-        {
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                        <th>Minutes Since Last Goal</th>
-                        <th>Goals</th>
-                        <th>Off</th>
-                        <th>Shots on Target</th>
-                        <th>Shot per 90</th>
-                        <th>Shots on Target Percentage</th>
-                        <th>Goals From Outside The Box</th>
-                        <th>NP-xG per 90</th>
-                        <th>Dribbles per 90</th>
-                        <th>Conversion Percentage</th>
-                        <th>xG</th>
-                        <th>Pressures Completed per 90</th>
-                        <th>Shots on Target per 90</th>
-                        <th>Shots</th>
-                        <th>xG per Shot</th>
-                        <th>Possession Lost per 90</th>
-                        <th>Pass Completion Percentage</th>
-                        <th>Clear Cut Chances Created</th>
-                        <th>Chances Created per 90</th>
-                        <th>Assists per 90</th>
-                        <th>NP-xG</th>
-                        <th>Distance per 90</th>
-                        <th>Fouls Against</th>
-                        <th>Assists</th>
-                        <th>Goals per 90 Minutes</th>
-                        <th>Minutes per Goal</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var striker in allStrikers)
-                    {
-                        <tr>
-                            <td>@striker.PlayerName</td>
-                            <td>£@striker.TransferValue</td>
-                            <td>
-                                @(striker.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{striker.PredictedValue}")
-                            </td>
-                            <td>
-                                @(striker.PredictedValue.Value - striker.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{striker.PredictedValue.Value - striker.TransferValue.Value}")
-                            </td>
-                            <td>@striker.Age</td>
-                            <td>@striker.Club</td>
-                            <td>@striker.Nation</td>
-
-                            <td>@striker.MinutesSinceLastGoal</td>
-                            <td>@striker.Goals</td>
-                            <td>@striker.Off</td>
-                            <td>@striker.ShotsOnTarget</td>
-                            <td>@striker.Shot90</td>
-                            <td>@striker.ShotsOnTargetPercentage</td>
-                            <td>@striker.GoalsFromOutsideTheBox</td>
-                            <td>@striker.NPxG90</td>
-                            <td>@striker.Dribblesper90</td>
-                            <td>@striker.ConvPercentage</td>
-                            <td>@striker.xG</td>
-                            <td>@striker.PresC90</td>
-                            <td>@striker.ShotsOnTargetper90</td>
-                            <td>@striker.Shots</td>
-                            <td>@striker.xGShot</td>
-                            <td>@striker.PossessionLostper90</td>
-                            <td>@striker.PassCompletionPercentage</td>
-                            <td>@striker.ClearCutChancesCreated</td>
-                            <td>@striker.ChancesCreatedper90</td>
-                            <td>@striker.Asts90</td>
-                            <td>@striker.NPxG</td>
-                            <td>@striker.Dist90</td>
-                            <td>@striker.FoulsAgainst</td>
-                            <td>@striker.Assists</td>
-                            <td>@striker.Goalsper90minutes</td>
-                            <td>@striker.MinsGm</td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
+                }
+            </tbody>
+        </table>
+        </div>
     }
-}
+}        
+
 </div>
 
 @code {
     private List<Striker> strikers = new();
-    private List<Striker> topStrikers = new();
     private List<Striker> allStrikers = new();
     private bool hasPredictions = true;
     private string? error = null;
-    private bool allPlayers = false;
     private bool expanded = false;
+    private string choice = "Difference";
+    private bool allPlayers = false;
+    private int playercount = 25;
 
     protected override void OnInitialized()
     {
         strikers = STState.Strikers;
-      
+
         if (strikers.Any())
         {
             try
             {
-                STPredictor.PredictStrikers(strikers);
-                allStrikers = strikers.Where(st => st.PredictedValue.HasValue && st.TransferValue.HasValue)
-                .OrderByDescending(st =>
-                    (st.PredictedValue!.Value - st.TransferValue!.Value))
-                .Take(100)
-                .ToList();
-
-                topStrikers = strikers
-                .Where(st => st.PredictedValue.HasValue && st.TransferValue.HasValue)
-                .OrderByDescending(st =>
-                    (st.PredictedValue!.Value - st.TransferValue!.Value))
-                .Take(25)
-                .ToList();
-                hasPredictions = topStrikers.Any();
-
+                UpdateStrikers();
             }
             catch (Exception ex)
             {
                 error = ex.Message;
             }
-            
+
         }
     }
-
-    private void TogglePlayers()
+    private void UpdateStrikers()
     {
-        allPlayers = !allPlayers;
-    }
+        playercount = allPlayers ? 100 : 25;
 
+        STPredictor.PredictStrikers(strikers);
+
+        var filteredStrikers = strikers
+            .Where(st => st.PredictedValue.HasValue &&
+                         st.TransferValue.HasValue);
+
+        allStrikers = (choice switch
+        {
+            "Predicted" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value),
+            "Actual" => filteredStrikers.OrderByDescending(st => st.TransferValue!.Value),
+            "Difference" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value - st.TransferValue!.Value),
+            "Age" => filteredStrikers.OrderByDescending(st => st.Age!.Value),
+            "MSLG" => filteredStrikers.OrderByDescending(st => st.MinutesSinceLastGoal!.Value),
+            "Goals" => filteredStrikers.OrderByDescending(st => st.Goals!.Value),
+            "Assists" => filteredStrikers.OrderByDescending(st => st.Assists!.Value),
+            "Goalsper90minutes" => filteredStrikers.OrderByDescending(st => st.Goalsper90minutes!.Value),
+            "ConvPercentage" => filteredStrikers.OrderByDescending(st => st.ConvPercentage!.Value),
+            "GoalsFromOutsideTheBox" => filteredStrikers.OrderByDescending(st => st.GoalsFromOutsideTheBox!.Value),
+            "Off" => filteredStrikers.OrderByDescending(st => st.Off!.Value),
+            "Shots" => filteredStrikers.OrderByDescending(st => st.Shots!.Value),
+            "Shot90" => filteredStrikers.OrderByDescending(st => st.Shot90!.Value),
+            "ShotsOnTarget" => filteredStrikers.OrderByDescending(st => st.ShotsOnTarget!.Value),
+            "ShotsOnTargetper90" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetper90!.Value),
+            "ShotsOnTargetPercentage" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetPercentage!.Value),
+            "xGShot" => filteredStrikers.OrderByDescending(st => st.xGShot!.Value),
+            "xG" => filteredStrikers.OrderByDescending(st => st.xG!.Value),
+            "NPxG" => filteredStrikers.OrderByDescending(st => st.NPxG!.Value),
+            "NPxG90" => filteredStrikers.OrderByDescending(st => st.NPxG90!.Value),
+            "ClearCutChancesCreated" => filteredStrikers.OrderByDescending(st => st.ClearCutChancesCreated!.Value),
+            "ChancesCreatedper90" => filteredStrikers.OrderByDescending(st => st.ChancesCreatedper90!.Value),
+            "Asts90" => filteredStrikers.OrderByDescending(st => st.Asts90!.Value),
+            "PassCompletionPercentage" => filteredStrikers.OrderByDescending(st => st.PassCompletionPercentage!.Value),
+            "Dribblesper90" => filteredStrikers.OrderByDescending(st => st.Dribblesper90!.Value),
+            "PossessionLostper90" => filteredStrikers.OrderByDescending(st => st.PossessionLostper90!.Value),
+            "PresC90" => filteredStrikers.OrderByDescending(st => st.PresC90!.Value),
+            "Dist90" => filteredStrikers.OrderByDescending(st => st.Dist90!.Value),
+            "FoulsAgainst" => filteredStrikers.OrderByDescending(st => st.FoulsAgainst!.Value),
+            "MinsGm" => filteredStrikers.OrderByDescending(st => st.MinsGm!.Value),
+            _ => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value - st.TransferValue!.Value)
+        })
+        .Take(playercount)
+        .ToList();
+    }
+    private void TogglePlayers()
+        {
+            allPlayers = !allPlayers;
+            playercount = allPlayers ? 100 : 25;
+            UpdateStrikers();
+        }
     private void ToggleView()
     {
         expanded = !expanded;
+        UpdateStrikers();
     }
     
 }
