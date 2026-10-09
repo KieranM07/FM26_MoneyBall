@@ -29,45 +29,45 @@
 @if (!expanded)
 {
     <select @bind="choice" @bind:after="UpdateStrikers">
-        <option value="Difference">Difference</option>
-        <option value="Predicted">Predicted Value</option>
-        <option value="Actual">Actual Value</option>
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
         <option value="Age">Age</option>
     </select>
 }
 else if (expanded)
 {
     <select @bind="choice" @bind:after="UpdateStrikers">
-        <option value="Difference">Difference</option>
-        <option value="Predicted">Predicted Value</option>
-        <option value="Actual">Actual Value</option>
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
         <option value="Age">Age</option>
-        <option value="MSLG">Minutes Since Last Goal</option>
+        <option value="Minutes Since Last Goal">Minutes Since Last Goal</option>
         <option value="Goals">Goals</option>
         <option value="Assists">Assists</option>
-        <option value="Goalsper90minutes">Goals per 90 Minutes</option>
-        <option value="ConvPercentage">Conversion Percentage</option>
-        <option value="GoalsFromOutsideTheBox">Goals from Outside the Box</option>
-        <option value="Off">Offside</option>
+        <option value="Goals Per 90 minutes">Goals per 90 Minutes</option>
+        <option value="Conversion Percentage">Conversion Percentage</option>
+        <option value="Goals From Outside The Box">Goals from Outside the Box</option>
+        <option value="Offsides">Offsides</option>
         <option value="Shots">Shots</option>
-        <option value="Shot90">Shots per 90</option>
-        <option value="ShotsOnTarget">Shots on Target</option>
-        <option value="ShotsOnTargetper90">Shots on Target per 90</option>
-        <option value="ShotsOnTargetPercentage">Shots on Target Percentage</option>
-        <option value="xGShot">xG per Shot</option>
+        <option value="Shots Per 90">Shots per 90</option>
+        <option value="Shots On Target">Shots on Target</option>
+        <option value="Shots On Target Per90">Shots on Target per 90</option>
+        <option value="Shots On Target Percentage">Shots on Target Percentage</option>
+        <option value="xG Per Shot">xG per Shot</option>
         <option value="xG">Expected Goals (xG)</option>
-        <option value="NPxG">Non-Penalty xG</option>
-        <option value="NPxG90">Non-Penalty xG per 90</option>
-        <option value="ClearCutChancesCreated">Clear-Cut Chances Created</option>
-        <option value="ChancesCreatedper90">Chances Created per 90</option>
-        <option value="Asts90">Assists per 90</option>
-        <option value="PassCompletionPercentage">Pass Completion Percentage</option>
-        <option value="Dribblesper90">Dribbles per 90</option>
-        <option value="PossessionLostper90">Possession Lost per 90</option>
-        <option value="PresC90">Pressures per 90</option>
-        <option value="Dist90">Distance per 90</option>
-        <option value="FoulsAgainst">Fouls Against</option>
-        <option value="MinsGm">Minutes per Game</option>
+        <option value="Non Penalty xG">Non-Penalty xG</option>
+        <option value="Non Penalty xG Per 90">Non-Penalty xG per 90</option>
+        <option value="Clear Cut Chances Created">Clear-Cut Chances Created</option>
+        <option value="Chances Created Per 90">Chances Created per 90</option>
+        <option value="Assists Per 90">Assists per 90</option>
+        <option value="Pass Completion Percentage">Pass Completion Percentage</option>
+        <option value="Dribbles Per 90">Dribbles per 90</option>
+        <option value="Possession Lost Per 90">Possession Lost per 90</option>
+        <option value="Pressures Completed per 90">Pressures per 90</option>
+        <option value="Distance Per 90">Distance per 90</option>
+        <option value="Fouls Against">Fouls Against</option>
+        <option value="Minutes Per Game">Minutes per Game</option>
     </select>
 }
 
@@ -79,8 +79,7 @@ else if (expanded)
 }
 else
 {
-    
-    <h1>Top @playercount Strikers by Valuation Difference</h1>
+    <h1>Top @playercount Strikers by @choice</h1>
     if (!expanded)
     {
             <div class="table-container">
@@ -240,7 +239,7 @@ else
     private bool hasPredictions = true;
     private string? error = null;
     private bool expanded = false;
-    private string choice = "Difference";
+    private string choice = "Value Difference";
     private bool allPlayers = false;
     private int playercount = 25;
 
@@ -273,50 +272,54 @@ else
 
         allStrikers = (choice switch
         {
-            "Predicted" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value),
-            "Actual" => filteredStrikers.OrderByDescending(st => st.TransferValue!.Value),
-            "Difference" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value - st.TransferValue!.Value),
+            "Predicted Value" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value),
+            "Actual Value" => filteredStrikers.OrderByDescending(st => st.TransferValue!.Value),
+            "Value Difference" => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value - st.TransferValue!.Value),
             "Age" => filteredStrikers.OrderByDescending(st => st.Age!.Value),
-            "MSLG" => filteredStrikers.OrderByDescending(st => st.MinutesSinceLastGoal!.Value),
+            "Minutes Since Last Goal" => filteredStrikers.OrderByDescending(st => st.MinutesSinceLastGoal!.Value),
             "Goals" => filteredStrikers.OrderByDescending(st => st.Goals!.Value),
             "Assists" => filteredStrikers.OrderByDescending(st => st.Assists!.Value),
-            "Goalsper90minutes" => filteredStrikers.OrderByDescending(st => st.Goalsper90minutes!.Value),
-            "ConvPercentage" => filteredStrikers.OrderByDescending(st => st.ConvPercentage!.Value),
-            "GoalsFromOutsideTheBox" => filteredStrikers.OrderByDescending(st => st.GoalsFromOutsideTheBox!.Value),
-            "Off" => filteredStrikers.OrderByDescending(st => st.Off!.Value),
+            "Goals Per 90 minutes" => filteredStrikers.OrderByDescending(st => st.Goalsper90minutes!.Value),
+            "Conv Percentage" => filteredStrikers.OrderByDescending(st => st.ConvPercentage!.Value),
+            "Goals From Outside The Box" => filteredStrikers.OrderByDescending(st => st.GoalsFromOutsideTheBox!.Value),
+            "Offsides" => filteredStrikers.OrderByDescending(st => st.Off!.Value),
             "Shots" => filteredStrikers.OrderByDescending(st => st.Shots!.Value),
-            "Shot90" => filteredStrikers.OrderByDescending(st => st.Shot90!.Value),
-            "ShotsOnTarget" => filteredStrikers.OrderByDescending(st => st.ShotsOnTarget!.Value),
-            "ShotsOnTargetper90" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetper90!.Value),
-            "ShotsOnTargetPercentage" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetPercentage!.Value),
-            "xGShot" => filteredStrikers.OrderByDescending(st => st.xGShot!.Value),
+            "Shot 90" => filteredStrikers.OrderByDescending(st => st.Shot90!.Value),
+            "Shots On Target" => filteredStrikers.OrderByDescending(st => st.ShotsOnTarget!.Value),
+            "Shots On Target per 90" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetper90!.Value),
+            "Shots On Target Percentage" => filteredStrikers.OrderByDescending(st => st.ShotsOnTargetPercentage!.Value),
+            "xG Per Shot" => filteredStrikers.OrderByDescending(st => st.xGShot!.Value),
             "xG" => filteredStrikers.OrderByDescending(st => st.xG!.Value),
-            "NPxG" => filteredStrikers.OrderByDescending(st => st.NPxG!.Value),
-            "NPxG90" => filteredStrikers.OrderByDescending(st => st.NPxG90!.Value),
-            "ClearCutChancesCreated" => filteredStrikers.OrderByDescending(st => st.ClearCutChancesCreated!.Value),
-            "ChancesCreatedper90" => filteredStrikers.OrderByDescending(st => st.ChancesCreatedper90!.Value),
-            "Asts90" => filteredStrikers.OrderByDescending(st => st.Asts90!.Value),
-            "PassCompletionPercentage" => filteredStrikers.OrderByDescending(st => st.PassCompletionPercentage!.Value),
-            "Dribblesper90" => filteredStrikers.OrderByDescending(st => st.Dribblesper90!.Value),
-            "PossessionLostper90" => filteredStrikers.OrderByDescending(st => st.PossessionLostper90!.Value),
-            "PresC90" => filteredStrikers.OrderByDescending(st => st.PresC90!.Value),
-            "Dist90" => filteredStrikers.OrderByDescending(st => st.Dist90!.Value),
-            "FoulsAgainst" => filteredStrikers.OrderByDescending(st => st.FoulsAgainst!.Value),
-            "MinsGm" => filteredStrikers.OrderByDescending(st => st.MinsGm!.Value),
+            "Non Penalty xG" => filteredStrikers.OrderByDescending(st => st.NPxG!.Value),
+            "Non Penalty xG Per 90" => filteredStrikers.OrderByDescending(st => st.NPxG90!.Value),
+            "Clear Cut Chances Created" => filteredStrikers.OrderByDescending(st => st.ClearCutChancesCreated!.Value),
+            "Chances Created Per 90" => filteredStrikers.OrderByDescending(st => st.ChancesCreatedper90!.Value),
+            "Assists Per 90" => filteredStrikers.OrderByDescending(st => st.Asts90!.Value),
+            "Pass Completion Percentage" => filteredStrikers.OrderByDescending(st => st.PassCompletionPercentage!.Value),
+            "Dribbles Per 90" => filteredStrikers.OrderByDescending(st => st.Dribblesper90!.Value),
+            "Possession Lost Per 90" => filteredStrikers.OrderByDescending(st => st.PossessionLostper90!.Value),
+            "Pressures Completed Per 90" => filteredStrikers.OrderByDescending(st => st.PresC90!.Value),
+            "Distance per 90" => filteredStrikers.OrderByDescending(st => st.Dist90!.Value),
+            "Fouls Against" => filteredStrikers.OrderByDescending(st => st.FoulsAgainst!.Value),
+            "Minutes Per Game" => filteredStrikers.OrderByDescending(st => st.MinsGm!.Value),
             _ => filteredStrikers.OrderByDescending(st => st.PredictedValue!.Value - st.TransferValue!.Value)
         })
         .Take(playercount)
         .ToList();
     }
     private void TogglePlayers()
-        {
-            allPlayers = !allPlayers;
-            playercount = allPlayers ? 100 : 25;
-            UpdateStrikers();
-        }
+    {
+        allPlayers = !allPlayers;
+        playercount = allPlayers ? 100 : 25;
+        UpdateStrikers();
+    }
     private void ToggleView()
     {
         expanded = !expanded;
+        if(expanded == false)
+        {
+            choice = "Value Difference";
+        }
         UpdateStrikers();
     }
     
