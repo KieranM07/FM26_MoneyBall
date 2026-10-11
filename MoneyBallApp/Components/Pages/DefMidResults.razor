@@ -17,6 +17,7 @@
 {
     <p>@error</p>
 }
+<div class="controls">
 <button class="btn btn-primary" @onclick="TogglePlayers">
     @(allPlayers ? "Show Top 25" : "Show Top 100")
 </button>
@@ -25,6 +26,52 @@
     @(expanded ? "Show Standard View" : "Show Expanded View")
 </button>
 
+@if (!expanded)
+{
+    <select @bind="choice" @bind:after="UpdateDMs">
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
+        <option value="Age">Age</option>
+    </select>
+}
+else if (expanded)
+{
+    <select @bind="choice" @bind:after="UpdateDMs">
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
+        <option value="Age">Age</option>
+        <option value="Interceptions Per 90">Interceptions Per 90</option>
+        <option value="Blocks Per 90">Blocks Per 90</option>
+        <option value="Key Tackles">Key Tackles</option>
+        <option value="Pass Completion Percentage">Pass Completion Percentage</option>
+        <option value="Yellow Cards">Yellow Cards</option>
+        <option value="Red Cards">Red Cards</option>
+        <option value="Tackles Completed Per 90">Tackles Completed Per 90</option>
+        <option value="Pressures Applied Per 90">Pressures Applied Per 90</option>
+        <option value="Possession Lost Per 90">Possession Lost Per 90</option>
+        <option value="Pressures Completed Per 90">Pressures Completed Per 90</option>
+        <option value="Key Passes Per 90">Key Passes Per 90</option>
+        <option value="Possession Won Per 90">Possession Won Per 90</option>
+        <option value="Tackle Completion Percentage">Tackle Completion Percentage</option>
+        <option value="Distance Per 90">Distance Per 90</option>
+        <option value="Chances Created Per 90">Chances Created Per 90</option>
+        <option value="Progressive Passes Per 90">Progressive Passes Per 90</option>
+        <option value="Progressive Passes">Progressive Passes</option>
+        <option value="Clear-Cut Chances Created">Clear-Cut Chances Created</option>
+        <option value="Passes Completed Per 90">Passes Completed Per 90</option>
+        <option value="Mistakes Leading to Goals">Mistakes Leading to Goals</option>
+        <option value="Open Play Key Passes Per 90">Open Play Key Passes Per 90</option>
+        <option value="Key Tackles Per 90">Key Tackles Per 90</option>
+        <option value="Minutes Per Game">Minutes Per Game</option>
+        <option value="Fouls Made">Fouls Made</option>
+    </select>
+}
+    <a href="/input" class="btn reset-button">
+        Reset
+    </a>
+</div>
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
@@ -32,330 +79,241 @@
 }
 else
 {
-    if (!allPlayers)
+
+    <h1>Top @playercount Defensive Midfielders by @choice</h1>
+    if (!expanded)
     {
-        <h1>Top 25 DefMids by Valuation Difference</h1>
-        if (!expanded)
-        {
             
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                    </tr>
-                </thead>
+        <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Actual</th>
+                    <th>Predicted</th>
+                    <th>Difference</th>
+                    <th>Age</th>
+                    <th>Current Club</th>
+                    <th>Nationality</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    @foreach (var defmid in topDefMids)
-                    {
-                        <tr>
-                            <td>@defmid.PlayerName</td>
-                            <td>£@defmid.TransferValue</td>
-                            <td>
-                                @(defmid.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{defmid.PredictedValue}")
-                            </td>
-                            <td>
-                                @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{defmid.PredictedValue.Value - defmid.TransferValue.Value}")
-                            </td>
-                            <td>@defmid.Age</td>
-                            <td>@defmid.Club</td>
-                            <td>@defmid.Nation</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
-        else
-        {
-              
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
+            <tbody>
+                @foreach (var defmid in allDefMids)
+                {
                     <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                        <th>Interceptions/90</th>
-                        <th>Blk/90</th>
-                        <th>Key Tackles</th>
-                        <th>Pass Completion %</th>
-                        <th>Yellow Cards</th>
-                        <th>Red Cards</th>
-                        <th>Tackles Completed/90</th>
-                        <th>Pres A/90</th>
-                        <th>Possession Lost/90</th>
-                        <th>Pres C/90</th>
-                        <th>Key Passes/90</th>
-                        <th>Possession Won/90</th>
-                        <th>Tackle Completion %</th>
-                        <th>Dist/90</th>
-                        <th>Chances Created/90</th>
-                        <th>Progressive Passes/90</th>
-                        <th>PsP</th>
-                        <th>Clear Cut Chances Created</th>
-                        <th>Passes Completed/90</th>
-                        <th>Mistakes Leading to Goals</th>
-                        <th>Open Play Key Passes/90</th>
-                        <th>Key Tackles/90</th>
-                        <th>Mins/Gm</th>
-                        <th>Fouls Made</th>
+                        <td>@defmid.PlayerName</td>
+                        <td>£@defmid.TransferValue?.ToString("N0")</td>
+                        <td>
+                            @(defmid.PredictedValue < 0
+                                ? "Model is not accurately able to predict this value"
+                                        : $"£{defmid.PredictedValue:N0}")
+                        </td>
+                        <td>
+                            @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
+                                ? "Player's Market value is higher than prediction"
+                                        : $"£{(defmid.PredictedValue.Value - defmid.TransferValue.Value):N0}")
+                        </td>
+                        <td>@defmid.Age</td>
+                        <td>@defmid.Club</td>
+                        <td>@defmid.Nation</td>
                     </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var defmid in topDefMids)
-                    {
-                        <tr>
-                            <td>@defmid.PlayerName</td>
-                            <td>£@defmid.TransferValue</td>
-                            <td>
-                                @(defmid.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{defmid.PredictedValue}")
-                            </td>
-                            <td>
-                                @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{defmid.PredictedValue.Value - defmid.TransferValue.Value}")
-                            </td>
-                            <td>@defmid.Age</td>
-                            <td>@defmid.Club</td>
-                            <td>@defmid.Nation</td>
-   
-                            <td>@defmid.Interceptionsper90</td>
-                            <td>@defmid.Blk90</td>
-                            <td>@defmid.KeyTackles</td>
-                            <td>@defmid.PassCompletionPercentage</td>
-                            <td>@defmid.YellowCards</td>
-                            <td>@defmid.RedCards</td>
-                            <td>@defmid.TacklesCompletedper90</td>
-                            <td>@defmid.PresA90</td>
-                            <td>@defmid.PossessionLostper90</td>
-                            <td>@defmid.PresC90</td>
-                            <td>@defmid.KeyPassesper90</td>
-                            <td>@defmid.PossessionWonper90</td>
-                            <td>@defmid.TackleCompletionPercentage</td>
-                            <td>@defmid.Dist90</td>
-                            <td>@defmid.ChancesCreatedper90</td>
-                            <td>@defmid.ProgressivePassesper90</td>
-                            <td>@defmid.PsP</td>
-                            <td>@defmid.ClearCutChancesCreated</td>
-                            <td>@defmid.PassesCompletedper90</td>
-                            <td>@defmid.MistakesLeadingtoGoals</td>
-                            <td>@defmid.OpenPlayKeyPassesper90</td>
-                            <td>@defmid.KeyTacklesper90</td>
-                            <td>@defmid.MinsGm</td>
-                            <td>@defmid.FoulsMade</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
+                }
+            </tbody>
+        </table>
+        </div>
     }
     else
     {
-        <h1>Top 100 DefMids by Valuation Difference</h1>
-        if (!expanded)
-        {
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
+              
+        <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Actual</th>
+                    <th>Predicted</th>
+                    <th>Difference</th>
+                    <th>Age</th>
+                    <th>Current Club</th>
+                    <th>Nationality</th>
+                    <th>Interceptions/90</th>
+                    <th>Blk/90</th>
+                    <th>Key Tackles</th>
+                    <th>Tackles Completed/90</th>
+                    <th>Key Tackles/90</th>
+                    <th>Tackle Completion %</th>
+                    <th>Pres A/90</th>
+                    <th>Pres C/90</th>
+                    <th>Mistakes Leading to Goals</th>
+                    <th>Passes Completed/90</th>
+                    <th>Pass Completion %</th>
+                    <th>Progressive Passes/90</th>
+                    <th>Progressive Passes</th>
+                    <th>Dist/90</th>
+                    <th>Possession Won/90</th>
+                    <th>Possession Lost/90</th>
+                    <th>Key Passes/90</th>
+                    <th>Open Play Key Passes/90</th>
+                    <th>Chances Created/90</th>
+                    <th>Clear Cut Chances Created</th>
+                    <th>Yellow Cards</th>
+                    <th>Red Cards</th>
+                    <th>Fouls Made</th>
+                    <th>Mins/Gm</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var defmid in allDefMids)
+                {
                     <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
+                        <td>@defmid.PlayerName</td>
+                        <td>£@defmid.TransferValue?.ToString("N0")</td>
+                        <td>
+                            @(defmid.PredictedValue < 0
+                                ? "Model is not accurately able to predict this value"
+                                        : $"£{defmid.PredictedValue:N0}")
+                        </td>
+                        <td>
+                            @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
+                                ? "Player's Market value is higher than prediction"
+                                        : $"£{(defmid.PredictedValue.Value - defmid.TransferValue.Value):N0}")
+                        </td>
+                        <td>@defmid.Age</td>
+                        <td>@defmid.Club</td>
+                        <td>@defmid.Nation</td>
+
+                        <td>@defmid.Interceptionsper90</td>
+                        <td>@defmid.Blk90</td>
+                        <td>@defmid.KeyTackles</td>
+                        <td>@defmid.TacklesCompletedper90</td>
+                        <td>@defmid.KeyTacklesper90</td>
+                        <td>@defmid.TackleCompletionPercentage</td>
+                        <td>@defmid.PresA90</td>
+                        <td>@defmid.PresC90</td>
+                        <td>@defmid.MistakesLeadingtoGoals</td>
+
+               
+                        <td>@defmid.PassesCompletedper90</td>
+                        <td>@defmid.PassCompletionPercentage</td>
+                        <td>@defmid.ProgressivePassesper90</td>
+                        <td>@defmid.PsP</td>
+                        <td>@defmid.Dist90</td>
+
+                
+                        <td>@defmid.PossessionWonper90</td>
+                        <td>@defmid.PossessionLostper90</td>
+
+              
+                        <td>@defmid.KeyPassesper90</td>
+                        <td>@defmid.OpenPlayKeyPassesper90</td>
+                        <td>@defmid.ChancesCreatedper90</td>
+                        <td>@defmid.ClearCutChancesCreated</td>
+
+                        <td>@defmid.YellowCards</td>
+                        <td>@defmid.RedCards</td>
+                        <td>@defmid.FoulsMade</td>
+
+                        <td>@defmid.MinsGm</td>
                     </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var defmid in allDefMids)
-                    {
-                        <tr>
-                            <td>@defmid.PlayerName</td>
-                            <td>£@defmid.TransferValue</td>
-                            <td>
-                                @(defmid.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{defmid.PredictedValue}")
-                            </td>
-                            <td>
-                                @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{defmid.PredictedValue.Value - defmid.TransferValue.Value}")
-                            </td>
-                            <td>@defmid.Age</td>
-                            <td>@defmid.Club</td>
-                            <td>@defmid.Nation</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
-        else
-        {
-           
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                            <th>Player</th>
-                            <th>Actual</th>
-                            <th>Predicted</th>
-                            <th>Difference</th>
-                            <th>Age</th>
-                            <th>Current Club</th>
-                            <th>Nationality</th>
-                            <th>Interceptions/90</th>
-                            <th>Blk/90</th>
-                            <th>Key Tackles</th>
-                            <th>Pass Completion %</th>
-                            <th>Yellow Cards</th>
-                            <th>Red Cards</th>
-                            <th>Tackles Completed/90</th>
-                            <th>Pres A/90</th>
-                            <th>Possession Lost/90</th>
-                            <th>Pres C/90</th>
-                            <th>Key Passes/90</th>
-                            <th>Possession Won/90</th>
-                            <th>Tackle Completion %</th>
-                            <th>Dist/90</th>
-                            <th>Chances Created/90</th>
-                            <th>Progressive Passes/90</th>
-                            <th>PsP</th>
-                            <th>Clear Cut Chances Created</th>
-                            <th>Passes Completed/90</th>
-                            <th>Mistakes Leading to Goals</th>
-                            <th>Open Play Key Passes/90</th>
-                            <th>Key Tackles/90</th>
-                            <th>Mins/Gm</th>
-                            <th>Fouls Made</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var defmid in allDefMids)
-                    {
-                        <tr>
-                            <td>@defmid.PlayerName</td>
-                            <td>£@defmid.TransferValue</td>
-                            <td>
-                                @(defmid.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{defmid.PredictedValue}")
-                            </td>
-                            <td>
-                                @(defmid.PredictedValue.Value - defmid.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{defmid.PredictedValue.Value - defmid.TransferValue.Value}")
-                            </td>
-                            <td>@defmid.Age</td>
-                            <td>@defmid.Club</td>
-                            <td>@defmid.Nation</td>
-
-                            <td>@defmid.Interceptionsper90</td>
-                            <td>@defmid.Blk90</td>
-                            <td>@defmid.KeyTackles</td>
-                            <td>@defmid.PassCompletionPercentage</td>
-                            <td>@defmid.YellowCards</td>
-                            <td>@defmid.RedCards</td>
-                            <td>@defmid.TacklesCompletedper90</td>
-                            <td>@defmid.PresA90</td>
-                            <td>@defmid.PossessionLostper90</td>
-                            <td>@defmid.PresC90</td>
-                            <td>@defmid.KeyPassesper90</td>
-                            <td>@defmid.PossessionWonper90</td>
-                            <td>@defmid.TackleCompletionPercentage</td>
-                            <td>@defmid.Dist90</td>
-                            <td>@defmid.ChancesCreatedper90</td>
-                            <td>@defmid.ProgressivePassesper90</td>
-                            <td>@defmid.PsP</td>
-                            <td>@defmid.ClearCutChancesCreated</td>
-                            <td>@defmid.PassesCompletedper90</td>
-                            <td>@defmid.MistakesLeadingtoGoals</td>
-                            <td>@defmid.OpenPlayKeyPassesper90</td>
-                            <td>@defmid.KeyTacklesper90</td>
-                            <td>@defmid.MinsGm</td>
-                            <td>@defmid.FoulsMade</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
+                }
+            </tbody>
+        </table>
+        </div>
     }
 }
+   
+
 </div>
 @code {
     private List<DefMid> defmids = new();
-    private List<DefMid> topDefMids = new();
     private List<DefMid> allDefMids = new();
     private bool hasPredictions = true;
     private string? error = null;
     private bool allPlayers = false;
     private bool expanded = false;
-
+    private string choice = "Value Difference";
+    private int playercount = 25;
     protected override void OnInitialized()
     {
         defmids = DMState.DefMids;
-      
+
         if (defmids.Any())
         {
             try
             {
-                DMPredictor.PredictDefMids(defmids);
-                allDefMids = defmids.Where(dm => dm.PredictedValue.HasValue && dm.TransferValue.HasValue)
-                .OrderByDescending(dm =>
-                    (dm.PredictedValue!.Value - dm.TransferValue!.Value))
-                .Take(100)
-                .ToList();
-
-                topDefMids = defmids
-                .Where(dm => dm.PredictedValue.HasValue && dm.TransferValue.HasValue)
-                .OrderByDescending(dm =>
-                    (dm.PredictedValue!.Value - dm.TransferValue!.Value))
-                .Take(25)
-                .ToList();
-                hasPredictions = topDefMids.Any();
+                UpdateDMs();
 
             }
             catch (Exception ex)
             {
                 error = ex.Message;
             }
-            
+
         }
+    }
+    private void UpdateDMs()
+    {
+        playercount = allPlayers ? 100 : 25;
+
+        DMPredictor.PredictDefMids(defmids);
+
+        var filteredDefensiveMidfielders = defmids
+            .Where(dm => dm.PredictedValue.HasValue &&
+                         dm.TransferValue.HasValue);
+
+        allDefMids = (choice switch
+        {
+            "Predicted Value" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PredictedValue!.Value),
+            "Actual Value" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.TransferValue!.Value),
+            "Value Difference" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PredictedValue!.Value - defmid.TransferValue!.Value),
+            "Age" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.Age!.Value),
+            "Interceptions Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.Interceptionsper90!.Value),
+            "Blocks Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.Blk90!.Value),
+            "Key Tackles" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.KeyTackles!.Value),
+            "Pass Completion Percentage" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PassCompletionPercentage!.Value),
+            "Yellow Cards" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.YellowCards!.Value),
+            "Red Cards" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.RedCards!.Value),
+            "Tackles Completed Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.TacklesCompletedper90!.Value),
+            "Pressures Applied Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PresA90!.Value),
+            "Possession Lost Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PossessionLostper90!.Value),
+            "Pressures Completed Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PresC90!.Value),
+            "Key Passes Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.KeyPassesper90!.Value),
+            "Possession Won Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PossessionWonper90!.Value),
+            "Tackle Completion Percentage" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.TackleCompletionPercentage!.Value),
+            "Distance Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.Dist90!.Value),
+            "Chances Created Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.ChancesCreatedper90!.Value),
+            "Progressive Passes Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.ProgressivePassesper90!.Value),
+            "Progressive Passes" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PsP!.Value),
+            "Clear-Cut Chances Created" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.ClearCutChancesCreated!.Value),
+            "Passes Completed Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PassesCompletedper90!.Value),
+            "Mistakes Leading to Goals" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.MistakesLeadingtoGoals!.Value),
+            "Open Play Key Passes Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.OpenPlayKeyPassesper90!.Value),
+            "Key Tackles Per 90" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.KeyTacklesper90!.Value),
+            "Minutes Per Game" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.MinsGm!.Value),
+            "Fouls Made" => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.FoulsMade!.Value),
+            _ => filteredDefensiveMidfielders.OrderByDescending(defmid => defmid.PredictedValue!.Value - defmid.TransferValue!.Value)
+        })
+        .Take(playercount)
+        .ToList();
     }
 
     private void TogglePlayers()
     {
         allPlayers = !allPlayers;
+        playercount = allPlayers ? 100 : 25;
+        UpdateDMs();
     }
 
     private void ToggleView()
     {
         expanded = !expanded;
+        if (expanded == false)
+        {
+            choice = "Value Difference";
+        }
+        UpdateDMs();
     }
     
 }

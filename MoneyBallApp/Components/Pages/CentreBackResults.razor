@@ -17,6 +17,7 @@
 {
     <p>@error</p>
 }
+<div class="controls">
 <button class="btn btn-primary" @onclick="TogglePlayers">
     @(allPlayers ? "Show Top 25" : "Show Top 100")
 </button>
@@ -70,6 +71,12 @@ else if(expanded)
         <option value="Red Cards">Red Cards</option>
     </select>
 }
+<a href="/input" class="btn reset-button">
+    Reset
+</a>
+</div>
+
+
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
@@ -268,6 +275,7 @@ else
             "Actual Value" => filteredCentreBacks.OrderByDescending(centreback => centreback.TransferValue!.Value),
             "Value Difference" => filteredCentreBacks.OrderByDescending(centreback => centreback.PredictedValue!.Value - centreback.TransferValue!.Value),
             "Height" => filteredCentreBacks.OrderByDescending(centreback => centreback.Height!.Value),
+            "Age" => filteredCentreBacks.OrderByDescending(centreback => centreback.Age!.Value),
             "Minutes Per Game" => filteredCentreBacks.OrderByDescending(centreback => centreback.MinsGm!.Value),
             "Tackles Completed Per 90" => filteredCentreBacks.OrderByDescending(centreback => centreback.TacklesCompletedper90!.Value),
             "Tackle Completion Percentage" => filteredCentreBacks.OrderByDescending(centreback => centreback.TackleCompletionPercentage!.Value),

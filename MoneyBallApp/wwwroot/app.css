@@ -149,3 +149,37 @@ h1:focus {
 .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .controls .btn,
+    .controls select {
+        height: 38px;
+        box-sizing: border-box;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .controls select {
+        vertical-align: middle;
+    }
+
+    .controls > * {
+        align-self: center;
+    }
+
+.reset-button {
+    color: #fff;
+    background-color: #DC143C;
+    border-color: #DC143C;
+}
+
+.reset-button:hover {
+    color: #fff;
+    background-color: #B01030;
+    border-color: #B01030;
+}

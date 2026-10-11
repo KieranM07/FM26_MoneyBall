@@ -18,6 +18,7 @@
 {
     <p>@error</p>
 }
+    <div class="controls">
 <button class="btn btn-primary" @onclick="TogglePlayers">
     @(allPlayers ? "Show Top 25" : "Show Top 100")
 </button>
@@ -70,7 +71,10 @@ else if (expanded)
         <option value="Minutes Per Game">Minutes per Game</option>
     </select>
 }
-
+<a href="/input" class="btn reset-button">
+        Reset
+    </a>
+</div>
 
 @if (!hasPredictions)
 {

@@ -17,6 +17,7 @@
 {
     <p>@error</p>
 }
+<div class="controls">
 <button class="btn btn-primary" @onclick="TogglePlayers">
     @(allPlayers ? "Show Top 25" : "Show Top 100")
 </button>
@@ -63,7 +64,10 @@ else if (expanded)
         <option value="Mistakes Leading to Goals">Mistakes Leading to Goals</option>
     </select>
 }
-
+    <a href="/input" class="btn reset-button">
+        Reset
+    </a>
+</div>
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
@@ -279,7 +283,6 @@ else
         })
         .Take(playercount)
         .ToList();
-
     }
     private void TogglePlayers()
     {

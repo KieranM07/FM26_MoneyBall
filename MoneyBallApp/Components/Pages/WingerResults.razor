@@ -17,6 +17,7 @@
 {
     <p>@error</p>
 }
+<div class="controls">
 <button class="btn btn-primary" @onclick="TogglePlayers">
     @(allPlayers ? "Show Top 25" : "Show Top 100")
 </button>
@@ -25,6 +26,60 @@
     @(expanded ? "Show Standard View" : "Show Expanded View")
 </button>
 
+@if (!expanded)
+{
+    <select @bind="choice" @bind:after="UpdateWs">
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
+        <option value="Age">Age</option>
+    </select>
+}
+else if (expanded)
+{
+    <select @bind="choice" @bind:after="UpdateWs">
+        <option value="Value Difference">Difference</option>
+        <option value="Predicted Value">Predicted Value</option>
+        <option value="Actual Value">Actual Value</option>
+        <option value="Age">Age</option>
+        <option value="Non-Penalty Expected Goals per 90">Non-Penalty Expected Goals per 90</option>
+        <option value="Non-Penalty Expected Goals">Non-Penalty Expected Goals</option>
+        <option value="Expected Goals">Expected Goals</option>
+        <option value="Expected Goals per Shot">Expected Goals per Shot</option>
+        <option value="Goals per 90 Minutes">Goals per 90 Minutes</option>
+        <option value="Shots">Shots</option>
+        <option value="Shots on Target per 90">Shots on Target per 90</option>
+        <option value="Conversion Percentage">Conversion Percentage</option>
+        <option value="Assists">Assists</option>
+        <option value="Assists per 90">Assists per 90</option>
+        <option value="Chances Created per 90">Chances Created per 90</option>
+        <option value="Clear Cut Chances Created">Clear Cut Chances Created</option>
+        <option value="Key Passes per 90">Key Passes per 90</option>
+        <option value="Open Play Key Passes per 90">Open Play Key Passes per 90</option>
+        <option value="Pass Completion Percentage">Pass Completion Percentage</option>
+        <option value="Progressive Passes per 90">Progressive Passes per 90</option>
+        <option value="Dribbles per 90">Dribbles per 90</option>
+        <option value="Crosses Completed per 90">Crosses Completed per 90</option>
+        <option value="Crosses Attempted per 90">Crosses Attempted per 90</option>
+        <option value="Crosses Completed Ratio">Crosses Completed Ratio</option>
+        <option value="Open Play Crosses Completed per 90">Open Play Crosses Completed per 90</option>
+        <option value="Open Play Crosses Attempted per 90">Open Play Crosses Attempted per 90</option>
+        <option value="Open Play Cross Completion Percentage">Open Play Cross Completion Percentage</option>
+        <option value="Key Tackles per 90">Key Tackles per 90</option>
+        <option value="Tackle Completion Percentage">Tackle Completion Percentage</option>
+        <option value="Interceptions per 90">Interceptions per 90</option>
+        <option value="Pressures Completed per 90">Pressures Completed per 90</option>
+        <option value="Possession Lost per 90">Possession Lost per 90</option>
+        <option value="Distance per 90">Distance per 90</option>
+        <option value="Sprints per 90">Sprints per 90</option>
+        <option value="Minutes per Game">Minutes per Game</option>
+        <option value="Fouls Made">Fouls Made</option>
+    </select>
+}
+<a href="/input" class="btn reset-button">
+    Reset
+</a>
+</div>
 @if (!hasPredictions)
 {
     <p>No predictions found.</p>
@@ -32,328 +87,173 @@
 }
 else
 {
-    if (!allPlayers)
+
+    <h1>Top @playercount Wingers by @choice</h1>
+    if (!expanded)
     {
-        <h1>Top 25 Wingers by Valuation Difference</h1>
-        if (!expanded)
-        {
-            <div class="table-container">
-            <table class="table table-striped table-hover">
-                <thead>
+        <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Actual</th>
+                    <th>Predicted</th>
+                    <th>Difference</th>
+                    <th>Age</th>
+                    <th>Current Club</th>
+                    <th>Nationality</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var winger in allWingers)
+                {
                     <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
+                        <td>@winger.PlayerName</td>
+                        <td>£@winger.TransferValue?.ToString("N0")</td>
+                        <td>
+                            @(winger.PredictedValue < 0
+                                ? "Model is not accurately able to predict this value"
+                                : $"£{winger.PredictedValue:N0}")
+                        </td>
+                        <td>
+                            @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                ? "Player's Market value is higher than prediction"
+                                : $"£{(winger.PredictedValue.Value - winger.TransferValue.Value):N0}")
+                        </td>
+                        <td>@winger.Age</td>
+                        <td>@winger.Club</td>
+                        <td>@winger.Nation</td>
                     </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var winger in topWingers)
-                    {
-                        <tr>
-                            <td>@winger.PlayerName</td>
-                            <td>£@winger.TransferValue</td>
-                            <td>
-                                @(winger.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{winger.PredictedValue}")
-                            </td>
-                            <td>
-                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
-                            </td>
-                            <td>@winger.Age</td>
-                            <td>@winger.Club</td>
-                            <td>@winger.Nation</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
-        else
-        {
-           <div class="table-container">
-           <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                        <th>NP-xG per 90</th>
-                        <th>Dribbles per 90</th>
-                        <th>Key Passes per 90</th>
-                        <th>Conversion Percentage</th>
-                        <th>Key Tackles per 90</th>
-                        <th>Tackle Completion Percentage</th>
-                        <th>Interceptions per 90</th>
-                        <th>xG</th>
-                        <th>Pressures Completed per 90</th>
-                        <th>Shots on Target per 90</th>
-                        <th>Shots</th>
-                        <th>xG per Shot</th>
-                        <th>Progressive Passes per 90</th>
-                        <th>Possession Lost per 90</th>
-                        <th>Pass Completion Percentage</th>
-                        <th>Open Play Key Passes per 90</th>
-                        <th>Clear Cut Chances Created</th>
-                        <th>Chances Created per 90</th>
-                        <th>Assists per 90</th>
-                        <th>Sprints per 90</th>
-                        <th>NP-xG</th>
-                        <th>Distance per 90</th>
-                        <th>Fouls Made</th>
-                        <th>Assists</th>
-                        <th>Goals per 90 Minutes</th>
-                        <th>Crosses Completed Ratio</th>
-                        <th>Minutes per Game</th>
-                        <th>Open Play Crosses Completed per 90</th>
-                        <th>Open Play Crosses Attempted per 90</th>
-                        <th>Open Play Cross Completion Percentage</th>
-                        <th>Crosses Completed per 90</th>
-                        <th>Crosses Attempted per 90</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var winger in topWingers)
-                    {
-                        <tr>
-                            <td>@winger.PlayerName</td>
-                            <td>£@winger.TransferValue</td>
-                            <td>
-                                @(winger.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{winger.PredictedValue}")
-                            </td>
-                            <td>
-                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
-                            </td>
-                            <td>@winger.Age</td>
-                            <td>@winger.Club</td>
-                            <td>@winger.Nation</td>
-
-                            <td>@winger.NPxG90</td>
-                            <td>@winger.Dribblesper90</td>
-                            <td>@winger.KeyPassesper90</td>
-                            <td>@winger.ConvPercentage</td>
-                            <td>@winger.KeyTacklesper90</td>
-                            <td>@winger.TackleCompletionPercentage</td>
-                            <td>@winger.Interceptionsper90</td>
-                            <td>@winger.xG</td>
-                            <td>@winger.PresC90</td>
-                            <td>@winger.ShotsOnTargetper90</td>
-                            <td>@winger.Shots</td>
-                            <td>@winger.xGperShot</td>
-                            <td>@winger.ProgressivePassesper90</td>
-                            <td>@winger.PossessionLostper90</td>
-                            <td>@winger.PassCompletionPercentage</td>
-                            <td>@winger.OpenPlayKeyPassesper90</td>
-                            <td>@winger.ClearCutChancesCreated</td>
-                            <td>@winger.ChancesCreatedper90</td>
-                            <td>@winger.Asts90</td>
-                            <td>@winger.Sprints90</td>
-                            <td>@winger.NPxG</td>
-                            <td>@winger.Dist90</td>
-                            <td>@winger.FoulsMade</td>
-                            <td>@winger.Assists</td>
-                            <td>@winger.Goalsper90minutes</td>
-                            <td>@winger.CrossesCompletedRatio</td>
-                            <td>@winger.MinsGm</td>
-                            <td>@winger.OpenPlayCrossesCompletedper90</td>
-                            <td>@winger.OpenPlayCrossesAttemptedper90</td>
-                            <td>@winger.OpenPlayCrossCompletionPercentage</td>
-                            <td>@winger.CrossesCompletedper90</td>
-                            <td>@winger.CrossesAttemptedper90</td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
+                }
+            </tbody>
+        </table>
+        </div>
     }
     else
     {
-        <h1>Top 100 Wingers by Valuation Difference</h1>
-        if (!expanded)
-        {
-           
-           <div class="table-container">
-           <table class="table table-striped table-hover">
-                <thead>
+        <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Actual</th>
+                    <th>Predicted</th>
+                    <th>Difference</th>
+                    <th>Age</th>
+                    <th>Current Club</th>
+                    <th>Nationality</th>
+                    <th>Non-Penalty Expected Goals per 90</th>
+                    <th>Non-Penalty Expected Goals</th>
+                    <th>Expected Goals</th>
+                    <th>Expected Goals per Shot</th>
+                    <th>Goals per 90 Minutes</th>
+                    <th>Shots</th>
+                    <th>Shots on Target per 90</th>
+                    <th>Conversion Percentage</th>
+                    <th>Assists</th>
+                    <th>Assists per 90</th>
+                    <th>Chances Created per 90</th>
+                    <th>Clear Cut Chances Created</th>
+                    <th>Key Passes per 90</th>
+                    <th>Open Play Key Passes per 90</th>
+                    <th>Pass Completion Percentage</th>
+                    <th>Progressive Passes per 90</th>
+                    <th>Dribbles per 90</th>
+                    <th>Crosses Completed per 90</th>
+                    <th>Crosses Attempted per 90</th>
+                    <th>Crosses Completed Ratio</th>
+                    <th>Open Play Crosses Completed per 90</th>
+                    <th>Open Play Crosses Attempted per 90</th>
+                    <th>Open Play Cross Completion Percentage</th>
+                    <th>Key Tackles per 90</th>
+                    <th>Tackle Completion Percentage</th>
+                    <th>Interceptions per 90</th>
+                    <th>Pressures Completed per 90</th>
+                    <th>Possession Lost per 90</th>
+                    <th>Distance per 90</th>
+                    <th>Sprints per 90</th>
+                    <th>Minutes per Game</th>
+                    <th>Fouls Made</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var winger in allWingers)
+                {
                     <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
+                        <td>@winger.PlayerName</td>
+                        <td>£@winger.TransferValue?.ToString("N0")</td>
+                        <td>
+                            @(winger.PredictedValue < 0
+                                ? "Model is not accurately able to predict this value"
+                                : $"£{winger.PredictedValue:N0}")
+                        </td>
+                        <td>
+                            @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
+                                ? "Player's Market value is higher than prediction"
+                                : $"£{(winger.PredictedValue.Value - winger.TransferValue.Value):N0}")
+                        </td>
+                        <td>@winger.Age</td>
+                        <td>@winger.Club</td>
+                        <td>@winger.Nation</td>
+                        <td>@winger.NPxG90</td>
+                        <td>@winger.NPxG</td>
+                        <td>@winger.xG</td>
+                        <td>@winger.xGperShot</td>
+                        <td>@winger.Goalsper90minutes</td>
+                        <td>@winger.Shots</td>
+                        <td>@winger.ShotsOnTargetper90</td>
+                        <td>@winger.ConvPercentage</td>
+                        <td>@winger.Assists</td>
+                        <td>@winger.Asts90</td>
+                        <td>@winger.ChancesCreatedper90</td>
+                        <td>@winger.ClearCutChancesCreated</td>
+                        <td>@winger.KeyPassesper90</td>
+                        <td>@winger.OpenPlayKeyPassesper90</td>
+                        <td>@winger.PassCompletionPercentage</td>
+                        <td>@winger.ProgressivePassesper90</td>
+                        <td>@winger.Dribblesper90</td>
+                        <td>@winger.CrossesCompletedper90</td>
+                        <td>@winger.CrossesAttemptedper90</td>
+                        <td>@winger.CrossesCompletedRatio</td>
+                        <td>@winger.OpenPlayCrossesCompletedper90</td>
+                        <td>@winger.OpenPlayCrossesAttemptedper90</td>
+                        <td>@winger.OpenPlayCrossCompletionPercentage</td>
+                        <td>@winger.KeyTacklesper90</td>
+                        <td>@winger.TackleCompletionPercentage</td>
+                        <td>@winger.Interceptionsper90</td>
+                        <td>@winger.PresC90</td>
+                        <td>@winger.PossessionLostper90</td>
+                        <td>@winger.Dist90</td>
+                        <td>@winger.Sprints90</td>
+                        <td>@winger.MinsGm</td>
+                        <td>@winger.FoulsMade</td>
+
                     </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var winger in allWingers)
-                    {
-                        <tr>
-                            <td>@winger.PlayerName</td>
-                            <td>£@winger.TransferValue</td>
-                            <td>
-                                @(winger.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{winger.PredictedValue}")
-                            </td>
-                            <td>
-                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
-                            </td>
-                            <td>@winger.Age</td>
-                            <td>@winger.Club</td>
-                            <td>@winger.Nation</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
-        else
-        {
-    
-           <div class="table-container">
-           <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Actual</th>
-                        <th>Predicted</th>
-                        <th>Difference</th>
-                        <th>Age</th>
-                        <th>Current Club</th>
-                        <th>Nationality</th>
-                        <th>NP-xG per 90</th>
-                        <th>Dribbles per 90</th>
-                        <th>Key Passes per 90</th>
-                        <th>Conversion Percentage</th>
-                        <th>Key Tackles per 90</th>
-                        <th>Tackle Completion Percentage</th>
-                        <th>Interceptions per 90</th>
-                        <th>xG</th>
-                        <th>Pressures Completed per 90</th>
-                        <th>Shots on Target per 90</th>
-                        <th>Shots</th>
-                        <th>xG per Shot</th>
-                        <th>Progressive Passes per 90</th>
-                        <th>Possession Lost per 90</th>
-                        <th>Pass Completion Percentage</th>
-                        <th>Open Play Key Passes per 90</th>
-                        <th>Clear Cut Chances Created</th>
-                        <th>Chances Created per 90</th>
-                        <th>Assists per 90</th>
-                        <th>Sprints per 90</th>
-                        <th>NP-xG</th>
-                        <th>Distance per 90</th>
-                        <th>Fouls Made</th>
-                        <th>Assists</th>
-                        <th>Goals per 90 Minutes</th>
-                        <th>Crosses Completed Ratio</th>
-                        <th>Minutes per Game</th>
-                        <th>Open Play Crosses Completed per 90</th>
-                        <th>Open Play Crosses Attempted per 90</th>
-                        <th>Open Play Cross Completion Percentage</th>
-                        <th>Crosses Completed per 90</th>
-                        <th>Crosses Attempted per 90</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var winger in allWingers)
-                    {
-                        <tr>
-                            <td>@winger.PlayerName</td>
-                            <td>£@winger.TransferValue</td>
-                            <td>
-                                @(winger.PredictedValue < 0
-                                    ? "Model is not accurately able to predict this value"
-                                    : $"£{winger.PredictedValue}")
-                            </td>
-                            <td>
-                                @(winger.PredictedValue.Value - winger.TransferValue.Value < 0
-                                    ? "Player's Market value is higher than prediction"
-                                    : $"£{winger.PredictedValue.Value - winger.TransferValue.Value}")
-                            </td>
-                            <td>@winger.Age</td>
-                            <td>@winger.Club</td>
-                            <td>@winger.Nation</td>
-
-                            <td>@winger.NPxG90</td>
-                            <td>@winger.Dribblesper90</td>
-                            <td>@winger.KeyPassesper90</td>
-                            <td>@winger.ConvPercentage</td>
-                            <td>@winger.KeyTacklesper90</td>
-                            <td>@winger.TackleCompletionPercentage</td>
-                            <td>@winger.Interceptionsper90</td>
-                            <td>@winger.xG</td>
-                            <td>@winger.PresC90</td>
-                            <td>@winger.ShotsOnTargetper90</td>
-                            <td>@winger.Shots</td>
-                            <td>@winger.xGperShot</td>
-                            <td>@winger.ProgressivePassesper90</td>
-                            <td>@winger.PossessionLostper90</td>
-                            <td>@winger.PassCompletionPercentage</td>
-                            <td>@winger.OpenPlayKeyPassesper90</td>
-                            <td>@winger.ClearCutChancesCreated</td>
-                            <td>@winger.ChancesCreatedper90</td>
-                            <td>@winger.Asts90</td>
-                            <td>@winger.Sprints90</td>
-                            <td>@winger.NPxG</td>
-                            <td>@winger.Dist90</td>
-                            <td>@winger.FoulsMade</td>
-                            <td>@winger.Assists</td>
-                            <td>@winger.Goalsper90minutes</td>
-                            <td>@winger.CrossesCompletedRatio</td>
-                            <td>@winger.MinsGm</td>
-                            <td>@winger.OpenPlayCrossesCompletedper90</td>
-                            <td>@winger.OpenPlayCrossesAttemptedper90</td>
-                            <td>@winger.OpenPlayCrossCompletionPercentage</td>
-                            <td>@winger.CrossesCompletedper90</td>
-                            <td>@winger.CrossesAttemptedper90</td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            </div>
-        }
+                }
+            </tbody>
+        </table>
+        </div>
     }
 }
+
 </div>
 
 @code {
     private List<Winger> wingers = new();
-    private List<Winger> topWingers = new();
     private List<Winger> allWingers = new();
     private bool hasPredictions = true;
     private string? error = null;
     private bool allPlayers = false;
     private bool expanded = false;
+    private string choice = "Value Difference";
+    private int playercount = 25;
 
     protected override void OnInitialized()
     {
         wingers = WState.Wingers;
-      
+
         if (wingers.Any())
         {
             try
@@ -365,31 +265,84 @@ else
                 .Take(100)
                 .ToList();
 
-                topWingers = wingers
-                .Where(w => w.PredictedValue.HasValue && w.TransferValue.HasValue)
-                .OrderByDescending(m =>
-                    (m.PredictedValue!.Value - m.TransferValue!.Value))
-                .Take(25)
-                .ToList();
-                hasPredictions = topWingers.Any();
+                UpdateWs();
 
             }
             catch (Exception ex)
             {
                 error = ex.Message;
             }
-            
+
         }
+    }
+    private void UpdateWs()
+    {
+        playercount = allPlayers ? 100 : 25;
+
+        WPredictor.PredictWingers(wingers);
+
+        var filteredWingers= wingers
+            .Where(w => w.PredictedValue.HasValue &&
+                         w.TransferValue.HasValue);
+        allWingers = (choice switch
+        {
+
+            "Predicted Value" => filteredWingers.OrderByDescending(winger => winger.PredictedValue!.Value),
+            "Actual Value" => filteredWingers.OrderByDescending(winger => winger.TransferValue!.Value),
+            "Value Difference" => filteredWingers.OrderByDescending(winger => winger.PredictedValue!.Value - winger.TransferValue!.Value),
+            "Age" => filteredWingers.OrderByDescending(winger => winger.Age!.Value),
+            "Non-Penalty Expected Goals per 90" => filteredWingers.OrderByDescending(winger => winger.NPxG90!.Value),
+            "Non-Penalty Expected Goals" => filteredWingers.OrderByDescending(winger => winger.NPxG!.Value),
+            "Expected Goals" => filteredWingers.OrderByDescending(winger => winger.xG!.Value),
+            "Expected Goals per Shot" => filteredWingers.OrderByDescending(winger => winger.xGperShot!.Value),
+            "Goals per 90 Minutes" => filteredWingers.OrderByDescending(winger => winger.Goalsper90minutes!.Value),
+            "Shots" => filteredWingers.OrderByDescending(winger => winger.Shots!.Value),
+            "Shots on Target per 90" => filteredWingers.OrderByDescending(winger => winger.ShotsOnTargetper90!.Value),
+            "Conversion Percentage" => filteredWingers.OrderByDescending(winger => winger.ConvPercentage!.Value),
+            "Assists" => filteredWingers.OrderByDescending(winger => winger.Assists!.Value),
+            "Assists per 90" => filteredWingers.OrderByDescending(winger => winger.Asts90!.Value),
+            "Chances Created per 90" => filteredWingers.OrderByDescending(winger => winger.ChancesCreatedper90!.Value),
+            "Clear Cut Chances Created" => filteredWingers.OrderByDescending(winger => winger.ClearCutChancesCreated!.Value),
+            "Key Passes per 90" => filteredWingers.OrderByDescending(winger => winger.KeyPassesper90!.Value),
+            "Open Play Key Passes per 90" => filteredWingers.OrderByDescending(winger => winger.OpenPlayKeyPassesper90!.Value),
+            "Pass Completion Percentage" => filteredWingers.OrderByDescending(winger => winger.PassCompletionPercentage!.Value),
+            "Progressive Passes per 90" => filteredWingers.OrderByDescending(winger => winger.ProgressivePassesper90!.Value),
+            "Dribbles per 90" => filteredWingers.OrderByDescending(winger => winger.Dribblesper90!.Value),
+            "Crosses Completed per 90" => filteredWingers.OrderByDescending(winger => winger.CrossesCompletedper90!.Value),
+            "Crosses Attempted per 90" => filteredWingers.OrderByDescending(winger => winger.CrossesAttemptedper90!.Value),
+            "Crosses Completed Ratio" => filteredWingers.OrderByDescending(winger => winger.CrossesCompletedRatio!.Value),
+            "Open Play Crosses Completed per 90" => filteredWingers.OrderByDescending(winger => winger.OpenPlayCrossesCompletedper90!.Value),
+            "Open Play Crosses Attempted per 90" => filteredWingers.OrderByDescending(winger => winger.OpenPlayCrossesAttemptedper90!.Value),
+            "Open Play Cross Completion Percentage" => filteredWingers.OrderByDescending(winger => winger.OpenPlayCrossCompletionPercentage!.Value),
+            "Key Tackles per 90" => filteredWingers.OrderByDescending(winger => winger.KeyTacklesper90!.Value),
+            "Tackle Completion Percentage" => filteredWingers.OrderByDescending(winger => winger.TackleCompletionPercentage!.Value),
+            "Interceptions per 90" => filteredWingers.OrderByDescending(winger => winger.Interceptionsper90!.Value),
+            "Pressures Completed per 90" => filteredWingers.OrderByDescending(winger => winger.PresC90!.Value),
+            "Possession Lost per 90" => filteredWingers.OrderByDescending(winger => winger.PossessionLostper90!.Value),
+            "Distance per 90" => filteredWingers.OrderByDescending(winger => winger.Dist90!.Value),
+            "Sprints per 90" => filteredWingers.OrderByDescending(winger => winger.Sprints90!.Value),
+            "Minutes per Game" => filteredWingers.OrderByDescending(winger => winger.MinsGm!.Value),
+            "Fouls Made" => filteredWingers.OrderByDescending(winger => winger.FoulsMade!.Value),
+            _ => filteredWingers.OrderByDescending(winger => winger.PredictedValue!.Value - winger.TransferValue!.Value)
+        }).Take(playercount)
+        .ToList();
     }
 
     private void TogglePlayers()
     {
         allPlayers = !allPlayers;
+        playercount = allPlayers ? 100 : 25;
+        UpdateWs();
     }
 
     private void ToggleView()
     {
         expanded = !expanded;
+        if (expanded == false)
+        {
+            choice = "Value Difference";
+        }
+        UpdateWs();
     }
     
 }
